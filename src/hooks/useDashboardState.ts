@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DashboardState, StudentInfo, DashboardSettings, CustomGradeScaleSettings } from '../types/state';
 import { Deadline } from '../types/deadline';
-import { Course } from '../types/course';
+import { Course, CourseStatus } from '../types/course';
 import { ScheduleItem } from '../types/schedule';
 import { getInitialSampleState } from '../data/sampleData';
 import { ParsedCourseResult, ParsedStudentInfo } from '../engines/sisParser';
@@ -325,11 +325,12 @@ export function useDashboardState() {
       parsedList.forEach(item => {
         const existing = courseMap.get(item.code);
         const isPassed = item.gradeScale4 !== null && item.gradeScale4 > 0;
-        const status = isPassed
+        const isFailed = item.gradeLetter === 'F' || (item.gradeScale4 !== null && item.gradeScale4 === 0);
+        const status: CourseStatus = isPassed
           ? 'passed'
-          : (item.gradeLetter === 'F'
+          : (isFailed
             ? 'failed'
-            : (existing?.status ?? (item.creditsTaken ? 'in_progress' : 'planned')));
+            : (item.status === 'in_progress' ? 'in_progress' : (existing?.status ?? (item.creditsTaken ? 'in_progress' : 'planned'))));
 
         if (existing) {
           const validName = (item.name && !item.name.startsWith('Học phần ')) ? item.name : existing.name;
@@ -344,7 +345,7 @@ export function useDashboardState() {
             creditsTaken: item.creditsTaken ?? existing.creditsTaken,
             codeTaken: item.codeTaken || existing.codeTaken,
             ects: item.ects ?? existing.ects,
-            isLearned: item.isLearned ?? existing.isLearned,
+            isLearned: item.isLearned ?? (isPassed || isFailed),
             prerequisites: (item.prerequisites && item.prerequisites.length > 0) ? item.prerequisites : existing.prerequisites,
             isModuleCourse: item.isModuleCourse ?? existing.isModuleCourse,
             isEnglishCourse: item.isEnglishCourse ?? existing.isEnglishCourse,
@@ -354,8 +355,8 @@ export function useDashboardState() {
             englishName: item.englishName || existing.englishName,
             gradeQt: item.gradeQt ?? existing.gradeQt,
             gradeCk: item.gradeCk ?? existing.gradeCk,
-            gradeLetter: item.gradeLetter ?? existing.gradeLetter,
-            gradeScale4: item.gradeScale4 ?? existing.gradeScale4,
+            gradeLetter: item.gradeLetter !== undefined ? item.gradeLetter : existing.gradeLetter,
+            gradeScale4: item.gradeScale4 !== undefined ? item.gradeScale4 : existing.gradeScale4,
             status
           });
         } else {

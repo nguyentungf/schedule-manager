@@ -255,9 +255,11 @@ export function parseSisText(rawText: string): ParseReport {
     if (!line) continue;
 
     // Bỏ qua dòng tiêu đề trang hoặc nhóm filter
+    if (/Open filter row popup menu/i.test(line)) continue;
+    if (/^(Mã HP|Tên HP|Kỳ học|Bắt buộc|TC ĐT|TC học|Mã HP học|Ghi chú loại HP|Điểm chữ|Điểm số|Viện\/Khoa)$/i.test(line)) continue;
+    if (/^Mã loại HP:/i.test(line)) continue;
     if (/^chương trình/i.test(line)) continue;
     if (/^tìm kiếm mã hp/i.test(line)) continue;
-    if (/^mã loại hp/i.test(line)) continue;
     if (line.includes('MÃ HỌC PHẦN') && line.includes('TÊN HỌC PHẦN')) {
       detectedSource = 'QLDT';
       continue;
@@ -280,6 +282,87 @@ export function parseSisText(rawText: string): ParseReport {
 
     const rawCode = codeMatch[1].replace(/\s+/g, '').toUpperCase();
     if (seenCodes.has(rawCode)) continue;
+
+    // --- PHƯƠNG ÁN 1: Phân tích bảng SIS TAB-SEPARATED chuẩn (Bảo toàn các cột rỗng của SIS) ---
+    // Cấu trúc 11 cột: Mã HP(0) | Tên HP(1) | Kỳ học(2) | Bắt buộc(3) | TC ĐT(4) | TC học(5) | Mã HP học(6) | Ghi chú loại HP(7) | Điểm chữ(8) | Điểm số(9) | Viện/Khoa(10)
+    if (lines[i].includes('\t')) {
+      const rawCols = lines[i].split('\t');
+      const codeColIdx = rawCols.findIndex(c => c.trim().replace(/\s+/g, '').toUpperCase() === rawCode);
+      if (codeColIdx !== -1) {
+        const rem = rawCols.slice(codeColIdx);
+        const isQldt = rem.some(c => /Cơ sở|Cốt lõi|Bổ trợ|Module|ECTS|Xem chi tiết/i.test(c)) || detectedSource === 'QLDT';
+
+        if (!isQldt && rem.length >= 5) {
+          const name = (rem[1] || '').trim().replace(/\s+(Cơ sở ngành|Cốt lõi ngành|Bổ trợ|Kiến thức bổ trợ|Module|Bắt buộc|Tự chọn)$/i, '');
+          const term = parseInt(rem[2]?.trim()) || undefined;
+          const reqStr = (rem[3] || '').trim();
+          const isRequired = !/false|0|không|uncheck/i.test(reqStr);
+
+          const tcDtStr = (rem[4] || '').trim();
+          const tcHocStr = (rem[5] || '').trim();
+          const tcDt = parseFloat(tcDtStr.replace(',', '.'));
+          const tcHoc = parseFloat(tcHocStr.replace(',', '.'));
+          const credits = (!isNaN(tcDt) && tcDt > 0) ? tcDt : ((!isNaN(tcHoc) && tcHoc > 0) ? tcHoc : 3);
+
+          const note = (rem[7] || '').trim();
+          const letterRaw = (rem[8] || '').trim().toUpperCase();
+          const scoreRaw = (rem[9] || '').trim().replace(',', '.');
+          const dept = (rem[10] || '').trim();
+
+          let letter: LetterGrade | null = null;
+          if (/^(A\+|A|B\+|B|C\+|C|D\+|D|F)$/i.test(letterRaw)) {
+            letter = letterRaw === 'A+' ? 'A' : (letterRaw as LetterGrade);
+          }
+
+          let scale4: number | null = null;
+          if (scoreRaw && !isNaN(parseFloat(scoreRaw))) {
+            const num = parseFloat(scoreRaw);
+            if (num >= 0 && num <= 4.0) scale4 = num;
+          }
+
+          if (letter && scale4 === null) {
+            scale4 = LETTER_TO_SCALE4[letter] ?? null;
+          }
+
+          let status: CourseStatus = 'unlocked';
+          let isLearned = false;
+
+          if (letter) {
+            isLearned = true;
+            status = letter === 'F' ? 'failed' : 'passed';
+          } else if (scale4 !== null) {
+            isLearned = true;
+            status = scale4 > 0 ? 'passed' : 'failed';
+          } else if (!isNaN(tcHoc) && tcHoc > 0) {
+            status = 'in_progress';
+          } else if (isRequired) {
+            status = 'planned';
+          }
+
+          const enriched = buildParsedCourse({
+            code: rawCode,
+            name: name || ('Học phần ' + rawCode),
+            credits: Math.round(credits),
+            ects: null,
+            gradeQt: null,
+            gradeCk: null,
+            gradeLetter: letter,
+            gradeScale4: scale4,
+            term,
+            isRequired,
+            isLearned,
+            category: note || currentCategory,
+            department: dept,
+            status,
+            major: parsedStudentInfo?.major
+          });
+
+          parsedCourses.push(enriched);
+          seenCodes.add(rawCode);
+          continue;
+        }
+      }
+    }
 
     // --- PHƯƠNG ÁN A: Phân tích TAB-SEPARATED hoặc MULTI-SPACE (Copy trực tiếp từ bảng HTML QLĐT hoặc SIS) ---
     // Hỗ trợ cả copy theo dòng và copy từng ô (cell-by-cell multi-line)
@@ -367,9 +450,9 @@ export function parseSisText(rawText: string): ParseReport {
           category = tabCols[codeColIdx + 7] || currentCategory;
 
           for (let k = codeColIdx + 8; k < tabCols.length; k++) {
-            const val = tabCols[k];
-            if (letterGradeRegex.test(val) && !letter) {
-              const m = val.match(letterGradeRegex);
+            const val = tabCols[k].trim();
+            if (/^(A\+|A|B\+|B|C\+|C|D\+|D|F)$/i.test(val) && !letter) {
+              const m = val.match(/^(A\+|A|B\+|B|C\+|C|D\+|D|F)$/i);
               if (m) letter = m[1].toUpperCase() === 'A+' ? 'A' : (m[1].toUpperCase() as LetterGrade);
             } else if (!isNaN(parseFloat(val.replace(',', '.'))) && scale4 === null) {
               const num = parseFloat(val.replace(',', '.'));
@@ -510,6 +593,7 @@ function buildParsedCourse(params: {
   isLearned?: boolean;
   category?: string;
   department?: string;
+  status?: CourseStatus;
   major?: string;
 }): ParsedCourseResult {
   const { code, name, credits, ects, gradeQt, gradeCk, gradeLetter, gradeScale4, isRequired, isLearned, category, department, major } = params;
@@ -558,13 +642,15 @@ function buildParsedCourse(params: {
   const calculatedIsRequired = isModuleCourse ? false : (isRequired ?? true);
 
   // 8. Xác định trạng thái học phần
-  let status: CourseStatus = 'unlocked';
-  if (isLearned) {
-    status = gradeLetter === 'F' ? 'failed' : 'passed';
-  } else if (calculatedIsRequired) {
-    status = 'planned';
-  } else {
-    status = 'unlocked';
+  let status: CourseStatus = params.status || 'unlocked';
+  if (!params.status) {
+    if (isLearned) {
+      status = gradeLetter === 'F' ? 'failed' : 'passed';
+    } else if (calculatedIsRequired) {
+      status = 'planned';
+    } else {
+      status = 'unlocked';
+    }
   }
 
   // Bảo tồn 100% tên do người dùng nhập hoặc cào được - Tuyệt đối không tự bịa tên

@@ -263,8 +263,10 @@ export const RawTextImportModal: React.FC<RawTextImportModalProps> = ({
                       <tr>
                         <th className="p-2.5">Mã Môn</th>
                         <th className="p-2.5">Tên Học Phần</th>
-                        <th className="p-2.5">Tín Chỉ</th>
-                        <th className="p-2.5">Trạng Thái / Điểm</th>
+                        <th className="p-2.5 text-center">Tín Chỉ</th>
+                        <th className="p-2.5 text-center">Điểm Chữ</th>
+                        <th className="p-2.5 text-center">Thang 4</th>
+                        <th className="p-2.5">Trạng Thái</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
@@ -272,16 +274,42 @@ export const RawTextImportModal: React.FC<RawTextImportModalProps> = ({
                         <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/30">
                           <td className="p-2.5 font-mono font-bold text-red-600 dark:text-red-400">{c.code}</td>
                           <td className="p-2.5 text-slate-900 dark:text-white truncate max-w-xs">{c.name}</td>
-                          <td className="p-2.5 font-mono text-slate-600 dark:text-slate-300">{c.credits} TC</td>
-                          <td className="p-2.5">
+                          <td className="p-2.5 font-mono text-center text-slate-700 dark:text-slate-200 font-semibold">{c.credits} TC</td>
+                          <td className="p-2.5 font-mono text-center">
                             {c.gradeLetter ? (
-                              <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                                {c.gradeLetter} ({c.gradeScale4?.toFixed(1) || 'Đạt'})
+                              <span className="font-bold text-slate-900 dark:text-white px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                {c.gradeLetter}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 font-normal italic">Chưa có</span>
+                            )}
+                          </td>
+                          <td className="p-2.5 font-mono text-center">
+                            {c.gradeScale4 !== null && c.gradeScale4 !== undefined ? (
+                              <span className="font-bold text-slate-900 dark:text-white">
+                                {c.gradeScale4.toFixed(1)}
+                              </span>
+                            ) : (
+                              <span className="text-slate-400 font-normal italic">Chưa có</span>
+                            )}
+                          </td>
+                          <td className="p-2.5">
+                            {c.gradeLetter && c.gradeLetter !== 'F' ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-bold text-[11px] border border-emerald-300 dark:border-emerald-800">
+                                Đã qua
+                              </span>
+                            ) : c.gradeLetter === 'F' ? (
+                              <span className="px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 font-bold text-[11px] border border-rose-300 dark:border-rose-800">
+                                Học lại
                               </span>
                             ) : c.status === 'in_progress' ? (
-                              <span className="text-blue-600 dark:text-blue-400">Đang học</span>
+                              <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 font-bold text-[11px] border border-blue-300 dark:border-blue-800">
+                                Đang học
+                              </span>
                             ) : (
-                              <span className="text-slate-400">Chưa học</span>
+                              <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[11px]">
+                                Chưa học
+                              </span>
                             )}
                           </td>
                         </tr>
