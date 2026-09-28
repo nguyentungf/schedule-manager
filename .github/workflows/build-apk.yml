@@ -6,7 +6,7 @@ on:
     tags: [ "v*" ]
   pull_request:
     branches: [ "main", "master" ]
-  workflow_dispatch: # Cho phép người dùng bấm nút "Run workflow" bất kỳ lúc nào trên GitHub
+  workflow_dispatch:
 
 jobs:
   build-apk:
@@ -17,32 +17,30 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js LTS
+      - name: ⚙️ Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: 📦 Install Node dependencies
-        run: |
-          npm config set omit ""
-          npm install --include=dev
-
-      - name: 🏗️ Build Vite Web App
-        run: npm run build
-
-      - name: 🔄 Sync Capacitor Android Assets
-        run: npx cap sync android
+          node-version: 22
 
       - name: ☕ Setup Java JDK 21 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'gradle'
 
-      - name: 📱 Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: 📦 Install Node dependencies
+        run: |
+          npm install
+
+      - name: 🏗️ Build Vite Web App
+        run: npm run build
+
+      - name: 🔄 Sync Capacitor Android Assets
+        env:
+          CI: true
+          CAPACITOR_TELEMETRY: "false"
+        run: |
+          npx cap sync android
 
       - name: 🔑 Grant execute permission for gradlew
         run: chmod +x android/gradlew
