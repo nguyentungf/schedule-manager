@@ -28,6 +28,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: 📱 Setup Android SDK 36 & Accept Licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
       - name: 📦 Install Node dependencies
         run: |
           npm install
@@ -48,7 +53,7 @@ jobs:
       - name: 🚀 Assemble Android Debug APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: 📤 Upload APK Artifact (Tải về file APK trực tiếp)
         uses: actions/upload-artifact@v4
@@ -66,6 +71,6 @@ jobs:
           body: |
             ## 📱 Bản cài đặt Android APK (HUST Smart Portal)
             - Tải tệp `app-debug.apk` đính kèm bên dưới và cài đặt trực tiếp vào điện thoại Android.
-            - Hỗ trợ Android 7.0 (Nougat) đến Android 15+.
+            - Hỗ trợ Android 7.0 (Nougat) đến Android 16+.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
