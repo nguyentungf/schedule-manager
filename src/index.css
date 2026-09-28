@@ -757,3 +757,37 @@ html.theme-light ::-webkit-scrollbar-thumb:hover {
   font-size: 0.875rem;
   font-weight: 500;
 }
+
+/* =========================================================
+   DRAWER / SIDEBAR SLIDE & FADE TRANSITIONS (HIỆU ỨNG TRƯỢT MENU)
+   ========================================================= */
+@keyframes drawerSlideInRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes drawerFadeInBackdrop {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-drawer-slide {
+  animation: drawerSlideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+.animate-drawer-backdrop {
+  animation: drawerFadeInBackdrop 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity;
+}
+

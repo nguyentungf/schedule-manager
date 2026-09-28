@@ -8,6 +8,7 @@ import { User, Sliders, Palette, Check, RefreshCw, ShieldAlert, Trash2, Graduati
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTab?: 'profile' | 'scales' | 'ui' | 'danger';
   studentInfo: StudentInfo;
   settings: DashboardSettings;
   allCourses?: Course[];
@@ -31,6 +32,7 @@ const COMMON_ENGLISH_COURSES = [
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
+  initialTab = 'profile',
   studentInfo,
   settings,
   allCourses = [],
@@ -42,8 +44,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onPurgeAllData,
   onResetToSampleData
 }) => {
-  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'scales' | 'ui' | 'danger'>('profile');
+  const [activeSubTab, setActiveSubTab] = useState<'profile' | 'scales' | 'ui' | 'danger'>(initialTab);
   const [sudoConfirmText, setSudoConfirmText] = useState('');
+
+  React.useEffect(() => {
+    if (initialTab && isOpen) {
+      setActiveSubTab(initialTab);
+    }
+  }, [initialTab, isOpen]);
 
   // Local state for profile
   const [profileForm, setProfileForm] = useState<StudentInfo>({ ...studentInfo });

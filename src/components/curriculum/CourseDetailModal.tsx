@@ -86,11 +86,19 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
   if (!course) return null;
 
-  // Lấy thông tin DAG từ engine
-  const graph = buildDependencyGraph(allCourses);
-  const nodeInfo = graph.get(course.code);
+  // Lấy thông tin DAG từ engine an toàn, chống crash
+  const nodeInfo = useMemo(() => {
+    try {
+      if (!course || !allCourses) return null;
+      const graph = buildDependencyGraph(allCourses);
+      return graph.get(course.code) || null;
+    } catch (e) {
+      console.warn('Lỗi khi tính toán DAG trong CourseDetailModal:', e);
+      return null;
+    }
+  }, [allCourses, course]);
 
-  const directPrereqs = nodeInfo ? nodeInfo.directPrerequisites : [];
+  const directPrereqs = nodeInfo ? nodeInfo.directPrerequisites : (course.prerequisites || []);
   const directDependents = nodeInfo ? nodeInfo.directDependents : [];
   const criticality = nodeInfo ? nodeInfo.criticalityIndex : 0;
 

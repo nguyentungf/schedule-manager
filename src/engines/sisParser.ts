@@ -302,7 +302,11 @@ export function parseSisText(rawText: string): ParseReport {
           const tcHocStr = (rem[5] || '').trim();
           const tcDt = parseFloat(tcDtStr.replace(',', '.'));
           const tcHoc = parseFloat(tcHocStr.replace(',', '.'));
-          const credits = (!isNaN(tcDt) && tcDt > 0) ? tcDt : ((!isNaN(tcHoc) && tcHoc > 0) ? tcHoc : 3);
+          // Cho phép 0 tín chỉ (đặc biệt đối với Giáo dục thể chất PE)
+          let credits = (!isNaN(tcDt) && tcDt >= 0) ? tcDt : ((!isNaN(tcHoc) && tcHoc >= 0) ? tcHoc : 3);
+          if (rawCode.startsWith('PE') || /thể chất|gdtc|bơi|bóng|điền kinh/i.test(name)) {
+            credits = 0;
+          }
 
           const note = (rem[7] || '').trim();
           const letterRaw = (rem[8] || '').trim().toUpperCase();
@@ -508,11 +512,29 @@ export function parseSisText(rawText: string): ParseReport {
     let ects: number | null = null;
     let term: number | undefined = undefined;
 
-    if (numbersInLine) {
+    const isPECourse = rawCode.startsWith('PE') || /thể chất|gdtc|bơi|bóng|điền kinh/i.test(line);
+
+    if (isPECourse) {
+      credits = 0;
+      if (numbersInLine && numbersInLine.length >= 1) {
+        const firstNum = parseInt(numbersInLine[0]);
+        if (firstNum >= 1 && firstNum <= 10) {
+          term = firstNum;
+        }
+      }
+    } else if (numbersInLine) {
       const floats = numbersInLine.map(n => parseFloat(n.replace(',', '.'))).filter(n => !isNaN(n));
+      // Bố cục dòng SIS: [Kỳ học] xuất hiện trước [TC ĐT] (ví dụ: Kỳ 3, 3 TC hoặc Kỳ 3, 0 TC)
       if (floats.length >= 2) {
-        credits = floats[0] <= 12 ? Math.round(floats[0]) : 3;
-        ects = floats[1];
+        const potentialTerm = Math.round(floats[0]);
+        const potentialCredits = floats[1];
+        if (potentialTerm >= 1 && potentialTerm <= 10 && potentialCredits >= 0 && potentialCredits <= 12) {
+          term = potentialTerm;
+          credits = Math.round(potentialCredits);
+        } else {
+          credits = floats[0] <= 12 ? Math.round(floats[0]) : 3;
+          ects = floats[1];
+        }
       } else if (floats.length === 1) {
         credits = floats[0] <= 12 ? Math.round(floats[0]) : 3;
       }
@@ -664,10 +686,13 @@ function buildParsedCourse(params: {
     }
   }
 
+  // Môn thể chất tại HUST luôn có 0 tín chỉ đào tạo tích lũy CPA
+  const finalCredits = isPhysicalEducation ? 0 : credits;
+
   return {
     code,
     name: finalName,
-    credits,
+    credits: finalCredits,
     ects: ects ?? null,
     gradeQt,
     gradeCk,

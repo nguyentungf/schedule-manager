@@ -80,6 +80,7 @@ export const App: React.FC = () => {
   const [isSideNavOpen, setIsSideNavOpen] = useState(false);
   const [isArrangeMode, setIsArrangeMode] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<'profile' | 'scales' | 'ui' | 'danger'>('profile');
   const [isScheduleOptimizerOpen, setIsScheduleOptimizerOpen] = useState(false);
   const [detailModalCourse, setDetailModalCourse] = useState<Course | null>(null);
 
@@ -400,15 +401,11 @@ export const App: React.FC = () => {
         isOpen={isSideNavOpen}
         onClose={() => setIsSideNavOpen(false)}
         studentInfo={state.studentInfo}
-        theme={state.settings.theme}
-        themePalette={state.settings.themePalette || 'crimson'}
-        onToggleTheme={handleToggleTheme}
-        onSelectPalette={(palette: string) => updateSettings({ themePalette: palette as any })}
-        onOpenSettings={() => {
+        onOpenSettings={(tab) => {
+          setSettingsInitialTab(tab || 'profile');
           setIsSideNavOpen(false);
           setIsSettingsModalOpen(true);
         }}
-        onResetSampleData={purgeAllData}
         isArrangeMode={isArrangeMode}
         onToggleArrangeMode={() => {
           setIsSideNavOpen(false);
@@ -447,6 +444,7 @@ export const App: React.FC = () => {
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
+        initialTab={settingsInitialTab}
         studentInfo={state.studentInfo}
         settings={state.settings}
         allCourses={state.courses}

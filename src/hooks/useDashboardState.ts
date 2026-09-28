@@ -325,12 +325,15 @@ export function useDashboardState() {
             ? 'failed'
             : (existing?.status ?? (item.creditsTaken ? 'in_progress' : 'planned')));
 
+        const isPE = item.code.startsWith('PE') || item.isPhysicalEducation || /thể chất|gdtc/i.test(item.name);
+        const resolvedCredits = isPE ? 0 : (item.credits !== undefined ? item.credits : (existing?.credits ?? 3));
+
         if (existing) {
           const validName = (item.name && !item.name.startsWith('Học phần ')) ? item.name : existing.name;
           courseMap.set(item.code, {
             ...existing,
             name: validName,
-            credits: item.credits || existing.credits,
+            credits: resolvedCredits,
             term: item.term ?? existing.term,
             isRequired: item.isRequired ?? existing.isRequired,
             department: item.department || existing.department,
@@ -342,6 +345,7 @@ export function useDashboardState() {
             prerequisites: (item.prerequisites && item.prerequisites.length > 0) ? item.prerequisites : existing.prerequisites,
             isModuleCourse: item.isModuleCourse ?? existing.isModuleCourse,
             isEnglishCourse: item.isEnglishCourse ?? existing.isEnglishCourse,
+            isPhysicalEducation: isPE,
             conditionString: item.conditionString || existing.conditionString,
             tuitionCredits: item.tuitionCredits ?? existing.tuitionCredits,
             duration: item.duration || existing.duration,
@@ -357,7 +361,7 @@ export function useDashboardState() {
             id: 'custom_' + item.code,
             code: item.code,
             name: item.name,
-            credits: item.credits,
+            credits: resolvedCredits,
             term: item.term || 1,
             weightQt: 0.3,
             weightCk: 0.7,
@@ -370,7 +374,7 @@ export function useDashboardState() {
             codeTaken: item.codeTaken,
             ects: item.ects,
             isLearned: item.isLearned,
-            isPhysicalEducation: item.isPhysicalEducation,
+            isPhysicalEducation: isPE,
             isGraduateOrEngineer: item.isGraduateOrEngineer,
             isElectiveSupport: item.isElectiveSupport,
             isModuleCourse: item.isModuleCourse,

@@ -194,6 +194,26 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                   <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
                     {aiRecommendation.summaryMessage}
                   </p>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                      aiRecommendation.averageDifficulty >= 3.7 && aiRecommendation.averageDifficulty <= 4.3
+                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                        : aiRecommendation.averageDifficulty > 4.3
+                        ? 'bg-red-100 text-red-800 dark:bg-red-950/80 dark:text-red-300 border border-red-300 dark:border-red-800'
+                        : 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300 dark:border-amber-800'
+                    }`}>
+                      <span>★ Độ khó TB: {aiRecommendation.averageDifficulty}/5.0</span>
+                      {aiRecommendation.averageDifficulty >= 3.7 && aiRecommendation.averageDifficulty <= 4.3 && (
+                        <span className="text-[10px] font-semibold">(Chuẩn vàng 3.7 - 4.3★)</span>
+                      )}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium border border-slate-200 dark:border-slate-700">
+                      ⚡ Tín chỉ: {aiRecommendation.totalCredits} TC
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-medium border border-slate-200 dark:border-slate-700">
+                      ⏳ Tải học: ~{aiRecommendation.estimatedWorkloadHours}h/tuần
+                    </span>
+                  </div>
                 </div>
               </div>
 

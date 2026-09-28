@@ -17,9 +17,10 @@ export function buildDependencyGraph(courses: Course[]): Map<string, Prerequisit
 
   // Khởi tạo các node
   courses.forEach(c => {
+    const prereqs = c.prerequisites || [];
     nodeMap.set(c.code, {
       code: c.code,
-      directPrerequisites: [...c.prerequisites],
+      directPrerequisites: [...prereqs],
       allPrerequisites: [],
       directDependents: [],
       allDependents: [],
@@ -29,7 +30,8 @@ export function buildDependencyGraph(courses: Course[]): Map<string, Prerequisit
 
   // Xây dựng danh sách phụ thuộc trực tiếp (Direct Dependents)
   courses.forEach(c => {
-    c.prerequisites.forEach(preCode => {
+    const prereqs = c.prerequisites || [];
+    prereqs.forEach(preCode => {
       const preNode = nodeMap.get(preCode);
       if (preNode) {
         if (!preNode.directDependents.includes(c.code)) {
