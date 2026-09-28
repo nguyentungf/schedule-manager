@@ -472,3 +472,288 @@ html.theme-light ::-webkit-scrollbar-thumb {
 html.theme-light ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* =========================================================
+   6 DYNAMIC THEME PALETTES (IMPECCABLE FULL-SYSTEM TRANSFORMATION)
+   Mỗi tùy chọn thay đổi toàn bộ bản sắc màu sắc trên toàn bộ ứng dụng
+   ========================================================= */
+
+/* Default / Crimson HUST */
+:root,
+[data-theme="crimson"] {
+  --primary: #dc2626;
+  --primary-hover: #b91c1c;
+  --primary-dark: #991b1b;
+  --primary-light: #fef2f2;
+  --accent: #f87171;
+  --primary-glow: rgba(220, 38, 38, 0.35);
+  --badge-bg: rgba(220, 38, 38, 0.15);
+  --badge-text: #ef4444;
+  --badge-border: rgba(239, 68, 68, 0.3);
+  --sidebar-gradient: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+  --hero-gradient: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+}
+
+/* Deep Ocean */
+[data-theme="ocean"] {
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-dark: #075985;
+  --primary-light: #f0f9ff;
+  --accent: #38bdf8;
+  --primary-glow: rgba(2, 132, 199, 0.35);
+  --badge-bg: rgba(2, 132, 199, 0.15);
+  --badge-text: #38bdf8;
+  --badge-border: rgba(56, 189, 248, 0.3);
+  --sidebar-gradient: linear-gradient(180deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+  --hero-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0c4a6e 100%);
+}
+
+/* Lush Emerald */
+[data-theme="emerald"] {
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-dark: #064e3b;
+  --primary-light: #ecfdf5;
+  --accent: #34d399;
+  --primary-glow: rgba(5, 150, 105, 0.35);
+  --badge-bg: rgba(5, 150, 105, 0.15);
+  --badge-text: #34d399;
+  --badge-border: rgba(52, 211, 153, 0.3);
+  --sidebar-gradient: linear-gradient(180deg, #059669 0%, #047857 50%, #064e3b 100%);
+  --hero-gradient: linear-gradient(135deg, #059669 0%, #047857 50%, #022c22 100%);
+}
+
+/* Royal Amethyst */
+[data-theme="amethyst"] {
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-dark: #4c1d95;
+  --primary-light: #f5f3ff;
+  --accent: #a78bfa;
+  --primary-glow: rgba(124, 58, 237, 0.35);
+  --badge-bg: rgba(124, 58, 237, 0.15);
+  --badge-text: #a78bfa;
+  --badge-border: rgba(167, 139, 250, 0.3);
+  --sidebar-gradient: linear-gradient(180deg, #7c3aed 0%, #6d28d9 50%, #4c1d95 100%);
+  --hero-gradient: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #2e1065 100%);
+}
+
+/* Sunset Amber */
+[data-theme="amber"] {
+  --primary: #d97706;
+  --primary-hover: #b45309;
+  --primary-dark: #78350f;
+  --primary-light: #fffbeb;
+  --accent: #fbbf24;
+  --primary-glow: rgba(217, 119, 6, 0.35);
+  --badge-bg: rgba(217, 119, 6, 0.15);
+  --badge-text: #fbbf24;
+  --badge-border: rgba(251, 191, 36, 0.3);
+  --sidebar-gradient: linear-gradient(180deg, #d97706 0%, #b45309 50%, #78350f 100%);
+  --hero-gradient: linear-gradient(135deg, #d97706 0%, #b45309 50%, #451a03 100%);
+}
+
+/* Monochrome OLED */
+[data-theme="oled"] {
+  --primary: #38bdf8;
+  --primary-hover: #0284c7;
+  --primary-dark: #0369a1;
+  --primary-light: #09090b;
+  --accent: #7dd3fc;
+  --primary-glow: rgba(56, 189, 248, 0.35);
+  --badge-bg: rgba(56, 189, 248, 0.15);
+  --badge-text: #38bdf8;
+  --badge-border: rgba(56, 189, 248, 0.35);
+  --sidebar-gradient: linear-gradient(180deg, #18181b 0%, #111113 50%, #09090b 100%);
+  --hero-gradient: linear-gradient(135deg, #27272a 0%, #18181b 50%, #09090b 100%);
+}
+
+[data-theme="oled"] body {
+  background-color: #000000 !important;
+}
+
+[data-theme="oled"] aside {
+  border-right: 1px solid #27272a !important;
+}
+
+[data-theme="oled"] .bg-white,
+[data-theme="oled"] .dark\:bg-\[\#0e1322\],
+[data-theme="oled"] .dark\:bg-\[\#131b2e\],
+[data-theme="oled"] .dark\:bg-\[\#0b0f1d\],
+[data-theme="oled"] .dark\:bg-\[\#070913\] {
+  background-color: #050507 !important;
+  border-color: #27272a !important;
+}
+
+/* =========================================================
+   UNIVERSAL THEME PALETTE INJECTION TO ALL UI COMPONENTS
+   ========================================================= */
+
+/* Sidebar Background */
+[data-theme] aside {
+  background: var(--sidebar-gradient) !important;
+}
+
+/* All Primary Buttons */
+[data-theme] .bg-red-600 {
+  background-color: var(--primary) !important;
+}
+
+[data-theme] .hover\:bg-red-700:hover,
+[data-theme] button.bg-red-600:hover {
+  background-color: var(--primary-hover) !important;
+}
+
+/* Active & Accent Texts */
+[data-theme] .text-red-600,
+[data-theme] .text-\[\#b91c1c\] {
+  color: var(--primary) !important;
+}
+
+[data-theme] .text-red-700 {
+  color: var(--primary-hover) !important;
+}
+
+[data-theme] .dark .dark\:text-red-400,
+[data-theme] .text-red-400,
+[data-theme] .text-red-300 {
+  color: var(--accent) !important;
+}
+
+[data-theme] .text-red-100,
+[data-theme] .text-red-200 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Badges and Light Tints */
+[data-theme] .bg-red-50 {
+  background-color: var(--primary-light) !important;
+}
+
+[data-theme] .dark .dark\:bg-red-950\/40,
+[data-theme] .dark\:bg-red-950\/40,
+[data-theme] .dark\:bg-red-950\/30,
+[data-theme] .bg-red-600\/20,
+[data-theme] .bg-red-500\/10 {
+  background-color: var(--badge-bg) !important;
+}
+
+/* Borders */
+[data-theme] .border-red-500,
+[data-theme] .border-red-600 {
+  border-color: var(--primary) !important;
+}
+
+[data-theme] .border-red-200,
+[data-theme] .border-red-300,
+[data-theme] .border-red-800,
+[data-theme] .dark\:border-red-800,
+[data-theme] .dark\:border-red-900\/40 {
+  border-color: var(--badge-border) !important;
+}
+
+/* Rings & Focus */
+[data-theme] .ring-red-500,
+[data-theme] .ring-red-600,
+[data-theme] .focus\:border-red-600:focus {
+  border-color: var(--primary) !important;
+  --tw-ring-color: var(--primary) !important;
+}
+
+/* Glowing Shadows */
+[data-theme] .shadow-red-600\/25,
+[data-theme] .shadow-red-900\/30,
+[data-theme] .shadow-red-950\/20,
+[data-theme] .shadow-red-950\/25,
+[data-theme] .shadow-red-950\/15 {
+  box-shadow: 0 10px 25px -5px var(--primary-glow) !important;
+}
+
+/* Hero Banners and Gradient Containers */
+[data-theme] .from-\[\#dc2626\],
+[data-theme] .from-red-600 {
+  --tw-gradient-from: var(--primary) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+[data-theme] .via-\[\#b91c1c\],
+[data-theme] .via-red-700,
+[data-theme] .via-rose-700 {
+  --tw-gradient-via: var(--primary-hover) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--primary-hover), var(--tw-gradient-to) !important;
+}
+
+[data-theme] .to-\[\#991b1b\],
+[data-theme] .to-red-800 {
+  --tw-gradient-to: var(--primary-dark) !important;
+}
+
+/* =========================================================
+   PAGE & TAB SLIDE TRANSITIONS (HIỆU ỨNG TRƯỢT MƯỢT MÀ)
+   ========================================================= */
+@keyframes pageSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pageSlideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-slide {
+  animation: pageSlideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+.animate-page-up {
+  animation: pageSlideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+/* =========================================================
+   CARD REARRANGEMENT / DRAG-AND-DROP WITH VIBRATION & PREVIEW
+   ========================================================= */
+@keyframes subtle-vibrate {
+  0% { transform: rotate(0deg) scale(1.02); }
+  25% { transform: rotate(-0.8deg) scale(1.02); }
+  50% { transform: rotate(0.8deg) scale(1.02); }
+  75% { transform: rotate(-0.4deg) scale(1.02); }
+  100% { transform: rotate(0deg) scale(1.02); }
+}
+
+.dragging-vibrate {
+  animation: subtle-vibrate 0.22s infinite ease-in-out;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--primary, #dc2626) !important;
+  opacity: 0.94;
+  cursor: grabbing !important;
+  z-index: 60;
+  position: relative;
+}
+
+.drop-indicator-placeholder {
+  border: 2px dashed var(--primary, #dc2626);
+  background: rgba(220, 38, 38, 0.08);
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary, #dc2626);
+  font-size: 0.875rem;
+  font-weight: 500;
+}

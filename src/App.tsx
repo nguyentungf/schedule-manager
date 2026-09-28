@@ -3,14 +3,13 @@ import { useDashboardState } from './hooks/useDashboardState';
 import { DashboardTab } from './types/state';
 import { Deadline } from './types/deadline';
 import { Course } from './types/course';
-import { getCurriculum, AVAILABLE_MAJORS } from './data/curricula';
+import { ScheduleItem } from './types/schedule';
+import { getCurriculum } from './data/curricula';
 
-// Layout & Dashboard Reference UI Components
+// Layout & Dashboard Components
 import { AppShell } from './components/layout/AppShell';
-import { HeroBanner } from './components/dashboard/HeroBanner';
-import { AcademicKpiSection } from './components/dashboard/AcademicKpiSection';
-import { EnrolledCoursesSection } from './components/dashboard/EnrolledCoursesSection';
-import { InstructorsAndNotices } from './components/dashboard/InstructorsAndNotices';
+import { SideNavDrawer } from './components/layout/SideNavDrawer';
+import { SortableDashboardGrid } from './components/dashboard/SortableDashboardGrid';
 
 // Feature Components
 import { ScheduleManager } from './components/schedule/ScheduleManager';
@@ -19,17 +18,26 @@ import { ExamPredictor } from './components/grade-calculator/ExamPredictor';
 import { CpaTargetTracker } from './components/grade-calculator/CpaTargetTracker';
 import { GradeScaleTable } from './components/grade-calculator/GradeScaleTable';
 import { StudyPlannerView } from './components/planner/StudyPlannerView';
-import { SisPasteModal } from './components/sis/SisPasteModal';
-import { CourseCatalogModal } from './components/curriculum/CourseCatalogModal';
-import { BookmarkletGuide } from './components/sis/BookmarkletGuide';
+import { RawTextImportModal } from './components/sis/RawTextImportModal';
 import { BackupRestore } from './components/sis/BackupRestore';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { DeadlineModal } from './components/dashboard/DeadlineModal';
 import { CourseDetailModal } from './components/curriculum/CourseDetailModal';
-import { Settings } from 'lucide-react';
+import { SmartScheduleOptimizerModal } from './components/schedule/SmartScheduleOptimizerModal';
+import { Settings, ClipboardPaste, Sparkles, ShieldCheck } from 'lucide-react';
+import { ParsedCourseResult, ParsedStudentInfo } from './engines/sisParser';
 
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
+
+const PALETTE_STATUS_BAR_COLORS: Record<string, string> = {
+  crimson: '#b91c1c',
+  ocean: '#0369a1',
+  emerald: '#047857',
+  amethyst: '#6d28d9',
+  amber: '#b45309',
+  oled: '#000000',
+};
 
 export const App: React.FC = () => {
   const {
@@ -55,7 +63,11 @@ export const App: React.FC = () => {
     importFullState,
     mergeSisCourses,
     toggleEnglishExemption,
-    mergeCourseCatalog,
+    updateEnglishExemptions,
+    updateDashboardCardOrder,
+    toggleHideDashboardCard,
+    restoreAllDashboardCards,
+    applyGeneratedSchedule,
     importCoursesFromExcel,
     importScheduleFromExcel,
     purgeAllData
@@ -64,16 +76,20 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
   const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
   const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
-  const [isSisModalOpen, setIsSisModalOpen] = useState(false);
-  const [isCourseCatalogModalOpen, setIsCourseCatalogModalOpen] = useState(false);
+  const [isRawTextModalOpen, setIsRawTextModalOpen] = useState(false);
+  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
+  const [isArrangeMode, setIsArrangeMode] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isScheduleOptimizerOpen, setIsScheduleOptimizerOpen] = useState(false);
   const [detailModalCourse, setDetailModalCourse] = useState<Course | null>(null);
 
-  // Tích hợp Native Android: Màu Status Bar & Phím Back vật lý
+  // Tích hợp Native Android: Màu Status Bar theo Theme Palette & Phím Back vật lý
   useEffect(() => {
     try {
+      const palette = state.settings.themePalette || 'crimson';
+      const barColor = PALETTE_STATUS_BAR_COLORS[palette] || '#b91c1c';
       StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: '#b91c1c' }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: barColor }).catch(() => {});
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
     } catch {
       // Ignored on web browser
@@ -84,14 +100,18 @@ export const App: React.FC = () => {
       CapApp.addListener('backButton', () => {
         if (detailModalCourse) {
           setDetailModalCourse(null);
+        } else if (isScheduleOptimizerOpen) {
+          setIsScheduleOptimizerOpen(false);
+        } else if (isSideNavOpen) {
+          setIsSideNavOpen(false);
+        } else if (isRawTextModalOpen) {
+          setIsRawTextModalOpen(false);
         } else if (isDeadlineModalOpen) {
           setIsDeadlineModalOpen(false);
-        } else if (isSisModalOpen) {
-          setIsSisModalOpen(false);
-        } else if (isCourseCatalogModalOpen) {
-          setIsCourseCatalogModalOpen(false);
         } else if (isSettingsModalOpen) {
           setIsSettingsModalOpen(false);
+        } else if (isArrangeMode) {
+          setIsArrangeMode(false);
         } else if (activeTab !== 'dashboard') {
           setActiveTab('dashboard');
         } else {
@@ -111,14 +131,17 @@ export const App: React.FC = () => {
     };
   }, [
     detailModalCourse,
+    isScheduleOptimizerOpen,
+    isSideNavOpen,
+    isRawTextModalOpen,
     isDeadlineModalOpen,
-    isSisModalOpen,
-    isCourseCatalogModalOpen,
     isSettingsModalOpen,
-    activeTab
+    isArrangeMode,
+    activeTab,
+    state.settings.themePalette
   ]);
 
-  // Đồng bộ class .theme-light và .auto-contrast trên thẻ <html> để toàn bộ giao diện đổi màu chuẩn xác
+  // Đồng bộ class .theme-light, .auto-contrast và [data-theme] trên thẻ <html>
   useEffect(() => {
     const root = document.documentElement;
     if (state.settings.theme === 'light') {
@@ -129,24 +152,18 @@ export const App: React.FC = () => {
       root.classList.add('dark');
     }
 
-    // Tự động tương phản màu nền WCAG AAA trên toàn bộ content
-    if (state.settings.autoContrast !== false) {
-      root.classList.add('auto-contrast');
-    } else {
-      root.classList.remove('auto-contrast');
-    }
-  }, [state.settings.theme, state.settings.autoContrast]);
+    // Thiết lập palette màu chủ đề (Crimson HUST, Ocean, Emerald, Amethyst, Amber, OLED)
+    const palette = state.settings.themePalette || 'crimson';
+    root.setAttribute('data-theme', palette);
+
+    // Tính năng tự động tương phản màu nền WCAG AAA là bắt buộc trên toàn hệ thống
+    root.classList.add('auto-contrast');
+  }, [state.settings.theme, state.settings.themePalette]);
 
   // Nút chuyển đổi nhanh Sáng / Tối
   const handleToggleTheme = () => {
     const nextTheme = state.settings.theme === 'light' ? 'dark' : 'light';
     updateSettings({ theme: nextTheme });
-  };
-
-  // Nút chuyển đổi nhanh Tự động tương phản
-  const handleToggleAutoContrast = () => {
-    const nextAutoContrast = state.settings.autoContrast === false;
-    updateSettings({ autoContrast: nextAutoContrast });
   };
 
   // Số deadline khẩn cấp (< 24h)
@@ -180,75 +197,80 @@ export const App: React.FC = () => {
     changeMajor(majorCode);
   };
 
+  // Callback nhập văn bản thô (Ctrl+A từ trang web)
+  const handleImportCoursesFromRaw = (courses: ParsedCourseResult[], studentInfo?: ParsedStudentInfo) => {
+    if (studentInfo) {
+      updateStudentInfo({
+        name: studentInfo.name || state.studentInfo.name,
+        studentId: studentInfo.studentId || state.studentInfo.studentId,
+        major: studentInfo.major || state.studentInfo.major,
+        majorName: studentInfo.majorName || state.studentInfo.majorName,
+        classCode: studentInfo.classCode || state.studentInfo.classCode,
+        cohort: studentInfo.cohort || state.studentInfo.cohort,
+      });
+    }
+    mergeSisCourses(courses);
+  };
+
+  const handleImportScheduleFromRaw = (items: ScheduleItem[]) => {
+    importScheduleItems(items);
+  };
+
   return (
     <AppShell
       activeTab={activeTab}
       onSelectTab={setActiveTab}
       studentInfo={state.studentInfo}
       theme={state.settings.theme}
-      onToggleTheme={handleToggleTheme}
-      autoContrast={state.settings.autoContrast !== false}
-      onToggleAutoContrast={handleToggleAutoContrast}
       urgentDeadlineCount={urgentDeadlineCount}
       onOpenSettings={() => setIsSettingsModalOpen(true)}
-      onResetSampleData={resetToSampleData}
-      onOpenSisModal={() => setIsSisModalOpen(true)}
-      onOpenCourseCatalogModal={() => setIsCourseCatalogModalOpen(true)}
+      onResetSampleData={purgeAllData}
+      onOpenRawTextModal={() => setIsRawTextModalOpen(true)}
+      onOpenSideNav={() => setIsSideNavOpen(true)}
     >
-      {/* TAB 1: Tổng Quan & Dashboard Theo Giao Diện Chuẩn Ảnh Mẫu */}
+      {/* TAB 1: Tổng Quan & Dashboard Với Tính Năng Kéo Thả Thẻ & Ẩn Thẻ */}
       {activeTab === 'dashboard' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-200">
-          {/* Main Left/Center Column (lg:col-span-8) */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* HUST Crimson Red Gradient Hero Banner */}
-            <HeroBanner
-              studentName={state.studentInfo.name}
-              studentId={state.studentInfo.studentId}
-              majorName={state.studentInfo.majorName}
-            />
-
-            {/* 3 KPI Cards: CPA, Completed Credits (with active red outline & progress bar), In-progress & DRL */}
-            <AcademicKpiSection
-              courses={state.courses}
-              totalCurriculumCredits={getCurriculum(state.studentInfo.major).totalCredits || 135}
-            />
-
-            {/* Enrolled Courses Grid with Crisp Cards & "Chi tiết" buttons */}
-            <EnrolledCoursesSection
-              courses={state.courses}
-              onOpenDetail={course => setDetailModalCourse(course)}
-              onNavigateToCurriculum={() => setActiveTab('curriculum')}
-            />
-          </div>
-
-          {/* Right Column (lg:col-span-4): Instructors + Daily Notice / Deadlines */}
-          <div className="lg:col-span-4 space-y-6">
-            <InstructorsAndNotices
-              deadlines={state.deadlines}
-              schedule={state.schedule}
-              onToggleComplete={toggleDeadlineComplete}
-              onOpenAddDeadline={handleOpenAddDeadline}
-              onEditDeadline={handleEditDeadline}
-            />
-          </div>
+        <div className="animate-page-slide">
+          <SortableDashboardGrid
+            cardOrder={state.settings.dashboardCardOrder}
+            hiddenCards={state.settings.dashboardHiddenCards || []}
+            onUpdateCardOrder={updateDashboardCardOrder}
+            onToggleHideCard={toggleHideDashboardCard}
+            onRestoreHiddenCards={restoreAllDashboardCards}
+            isArrangeMode={isArrangeMode}
+            onExitArrangeMode={() => setIsArrangeMode(false)}
+            studentInfo={state.studentInfo}
+            courses={state.courses}
+            totalCurriculumCredits={getCurriculum(state.studentInfo.major).totalCredits || 135}
+            deadlines={state.deadlines}
+            schedule={state.schedule}
+            onOpenCourseDetail={(course: Course) => setDetailModalCourse(course)}
+            onNavigateToCurriculum={() => setActiveTab('curriculum')}
+            onToggleDeadlineComplete={toggleDeadlineComplete}
+            onOpenAddDeadline={handleOpenAddDeadline}
+            onEditDeadline={handleEditDeadline}
+          />
         </div>
       )}
 
       {/* TAB 2: Thời Khóa Biểu (TKB) */}
       {activeTab === 'schedule' && (
-        <ScheduleManager
-          schedule={state.schedule}
-          onAddScheduleItem={addScheduleItem}
-          onUpdateScheduleItem={updateScheduleItem}
-          onDeleteScheduleItem={deleteScheduleItem}
-          onImportScheduleItems={importScheduleItems}
-          onImportScheduleFromExcel={importScheduleFromExcel}
-        />
+        <div className="animate-page-slide">
+          <ScheduleManager
+            schedule={state.schedule}
+            onAddScheduleItem={addScheduleItem}
+            onUpdateScheduleItem={updateScheduleItem}
+            onDeleteScheduleItem={deleteScheduleItem}
+            onImportScheduleItems={importScheduleItems}
+            onImportScheduleFromExcel={importScheduleFromExcel}
+            onOpenOptimizer={() => setIsScheduleOptimizerOpen(true)}
+          />
+        </div>
       )}
 
       {/* TAB 3: Bản đồ CTĐT & Cây Tiên Quyết */}
       {activeTab === 'curriculum' && (
-        <div className="animate-in fade-in duration-200">
+        <div className="animate-page-slide">
           <CurriculumView
             courses={state.courses}
             onUpdateCourse={updateCourse}
@@ -265,7 +287,7 @@ export const App: React.FC = () => {
 
       {/* TAB 4: Máy Tính Điểm Thi CK & Mục Tiêu CPA */}
       {activeTab === 'grade-calculator' && (
-        <div className="space-y-6 animate-in fade-in duration-200">
+        <div className="space-y-6 animate-page-slide">
           <ExamPredictor />
           <CpaTargetTracker
             courses={state.courses}
@@ -279,7 +301,7 @@ export const App: React.FC = () => {
 
       {/* TAB 5: Dự Đoán GPA & Gợi Ý Môn Học */}
       {activeTab === 'planner' && (
-        <div className="animate-in fade-in duration-200">
+        <div className="animate-page-slide">
           <StudyPlannerView
             courses={state.courses}
             semesterHistory={state.semesterHistory}
@@ -287,75 +309,133 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 6: Cổng Dữ Liệu SIS HUST */}
+      {/* TAB 6: Cổng Dữ Liệu SIS HUST - Tự Động Nhận Diện Dữ Liệu Từ Văn Bản Thô */}
       {activeTab === 'sis' && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-[#131b2e] border border-slate-200/80 dark:border-slate-700/70 rounded-3xl p-5 shadow-sm flex flex-col justify-between gap-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                  1. Nhập Bảng Điểm & CTĐT Từ QLĐT / SIS HUST
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Dán nội dung bảng CTĐT từ qldt.hust.edu.vn hoặc sis.hust.edu.vn (hỗ trợ lọc môn Thể chất, Kỹ sư, Bổ trợ 9TC).
-                </p>
+        <div className="space-y-6 animate-page-slide">
+          {/* Main Hero Card for Raw Text Auto-Detector */}
+          <div className="bg-gradient-to-br from-red-600/10 via-slate-900/60 to-slate-900/90 border border-red-500/30 rounded-3xl p-5 sm:p-6 shadow-xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white flex items-center justify-center shadow-md shadow-red-900/30 shrink-0">
+                  <ClipboardPaste className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Nhận Diện Dữ Liệu SIS / QLĐT</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-600/20 text-red-600 dark:text-red-400 font-bold border border-red-500/30">
+                      Ctrl + A
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Hỗ trợ 100% điện thoại di động & máy tính không cần DevTools.
+                  </p>
+                </div>
               </div>
+
               <button
-                onClick={() => setIsSisModalOpen(true)}
-                className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-colors w-full sm:w-auto self-start"
+                onClick={() => setIsRawTextModalOpen(true)}
+                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-red-600/25 transition-all flex items-center gap-2 shrink-0 active:scale-95"
               >
-                Mở Nhập CTĐT & Bảng Điểm
+                <ClipboardPaste className="w-4 h-4" />
+                <span>Mở Trình Dán Dữ Liệu</span>
               </button>
             </div>
 
-            <div className="bg-white dark:bg-[#131b2e] border border-amber-500/30 rounded-3xl p-5 shadow-sm flex flex-col justify-between gap-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  <span>2. Cào & Ghép HP Điều Kiện (CourseLists)</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">MỚI</span>
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Cào dữ liệu từ https://ctt-sis.hust.edu.vn/pub/CourseLists.aspx để cập nhật chính xác môn tiên quyết, học trước, học phí và trọng số.
-                </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs text-slate-600 dark:text-slate-300">
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold block text-slate-900 dark:text-white">1. Chọn tất cả</span>
+                  <span className="text-[11px] text-slate-400">Ctrl + A toàn bộ trang SIS / CTT và Copy.</span>
+                </div>
               </div>
-              <button
-                onClick={() => setIsCourseCatalogModalOpen(true)}
-                className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md shadow-amber-950/40 transition-colors w-full sm:w-auto self-start"
-              >
-                Mở Trình Cào HP Tiên Quyết
-              </button>
+
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold block text-slate-900 dark:text-white">2. Dán vào ứng dụng</span>
+                  <span className="text-[11px] text-slate-400">Tự động trích xuất thông tin & loại bỏ rác.</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
+                <ClipboardPaste className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold block text-slate-900 dark:text-white">3. Đồng bộ hoàn tất</span>
+                  <span className="text-[11px] text-slate-400">Điền điểm số, tín chỉ và TKB ngay tức thì.</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <BookmarkletGuide />
           <BackupRestore
             state={state}
             onImportState={importFullState}
-            onResetSampleData={resetToSampleData}
+            onResetSampleData={purgeAllData}
           />
         </div>
       )}
 
       {/* TAB 7: Cài Đặt Hệ Thống */}
       {activeTab === 'settings' && (
-        <div className="bg-white dark:bg-[#131b2e] rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 text-center space-y-4 animate-in fade-in duration-200">
+        <div className="bg-white dark:bg-[#131b2e] rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 text-center space-y-4 animate-page-slide">
           <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
             <Settings className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Cài Đặt Hệ Thống & Tài Khoản</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Cài Đặt Hệ Thống</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-            Tùy biến tài khoản sinh viên, chuyên ngành đào tạo, thang điểm 4 - 10 và chế độ giao diện.
+            Quản lý tài khoản sinh viên, chuyên ngành, thang điểm và bảng màu giao diện.
           </p>
           <button
             onClick={() => setIsSettingsModalOpen(true)}
-            className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-lg shadow-red-600/25 transition-all"
+            className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/25 transition-all"
           >
-            Mở Bảng Cài Đặt Chi Tiết
+            Mở Bảng Cài Đặt
           </button>
         </div>
       )}
 
-      {/* Modals */}
+      {/* Modals & Drawers */}
+      <SideNavDrawer
+        isOpen={isSideNavOpen}
+        onClose={() => setIsSideNavOpen(false)}
+        studentInfo={state.studentInfo}
+        theme={state.settings.theme}
+        themePalette={state.settings.themePalette || 'crimson'}
+        onToggleTheme={handleToggleTheme}
+        onSelectPalette={(palette: string) => updateSettings({ themePalette: palette as any })}
+        onOpenSettings={() => {
+          setIsSideNavOpen(false);
+          setIsSettingsModalOpen(true);
+        }}
+        onResetSampleData={purgeAllData}
+        isArrangeMode={isArrangeMode}
+        onToggleArrangeMode={() => {
+          setIsSideNavOpen(false);
+          setIsArrangeMode(!isArrangeMode);
+          if (activeTab !== 'dashboard') setActiveTab('dashboard');
+        }}
+        onResetCardOrder={() => updateDashboardCardOrder(['hero', 'kpi', 'courses', 'deadlines'])}
+        hiddenCards={state.settings.dashboardHiddenCards || []}
+        onToggleHideCard={toggleHideDashboardCard}
+        onRestoreHiddenCards={restoreAllDashboardCards}
+      />
+
+      <SmartScheduleOptimizerModal
+        isOpen={isScheduleOptimizerOpen}
+        onClose={() => setIsScheduleOptimizerOpen(false)}
+        allCourses={state.courses}
+        studentInfo={state.studentInfo}
+        onApplySchedule={applyGeneratedSchedule}
+      />
+
+      <RawTextImportModal
+        isOpen={isRawTextModalOpen}
+        onClose={() => setIsRawTextModalOpen(false)}
+        onImportCourses={handleImportCoursesFromRaw}
+        onImportSchedule={handleImportScheduleFromRaw}
+      />
+
       <DeadlineModal
         isOpen={isDeadlineModalOpen}
         onClose={() => setIsDeadlineModalOpen(false)}
@@ -364,30 +444,19 @@ export const App: React.FC = () => {
         courses={state.courses}
       />
 
-      <SisPasteModal
-        isOpen={isSisModalOpen}
-        onClose={() => setIsSisModalOpen(false)}
-        onMergeCourses={mergeSisCourses}
-      />
-
-      <CourseCatalogModal
-        isOpen={isCourseCatalogModalOpen}
-        onClose={() => setIsCourseCatalogModalOpen(false)}
-        onMergeCatalog={mergeCourseCatalog}
-        initialMajorCode={state.studentInfo.major}
-      />
-
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         studentInfo={state.studentInfo}
         settings={state.settings}
+        allCourses={state.courses}
         onUpdateStudentInfo={updateStudentInfo}
         onUpdateSettings={updateSettings}
         onUpdateGradeScales={updateGradeScales}
         onToggleEnglishExemption={toggleEnglishExemption}
+        onUpdateEnglishExemptions={updateEnglishExemptions}
         onPurgeAllData={purgeAllData}
-        onResetToSampleData={resetToSampleData}
+        onResetToSampleData={purgeAllData}
       />
 
       {detailModalCourse && (

@@ -599,10 +599,10 @@ export function useDashboardState() {
 
   const toggleHideDashboardCard = useCallback((cardId: string) => {
     setState(prev => {
-      const currentHidden = prev.settings.dashboardHiddenCards || [];
+      const currentHidden: string[] = prev.settings.dashboardHiddenCards || [];
       const isHidden = currentHidden.includes(cardId);
       const nextHidden = isHidden
-        ? currentHidden.filter(id => id !== cardId)
+        ? currentHidden.filter((id: string) => id !== cardId)
         : [...currentHidden, cardId];
 
       return {

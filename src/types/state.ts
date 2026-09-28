@@ -42,6 +42,7 @@ export interface DashboardSettings {
   manualScheduleMode?: boolean;   // Toggle tự thiết lập TKB thủ công
   autoContrast?: boolean;         // Tự động tương phản màu nền WCAG AAA trên toàn bộ content (bắt buộc)
   dashboardCardOrder?: string[];  // Thứ tự hiển thị các thẻ kéo thả trên Dashboard
+  dashboardHiddenCards?: string[]; // Danh sách ID các thẻ đang bị ẩn trên Dashboard
 }
 
 export interface DashboardState {
