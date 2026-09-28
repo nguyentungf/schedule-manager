@@ -12,32 +12,24 @@ import {
   Settings, 
   Search, 
   Bell, 
-  Sun, 
-  Moon, 
   RotateCcw,
-  Sparkles,
-  LogOut,
-  ChevronRight,
   Menu,
   X,
-  Upload,
-  BookOpen,
-  MoreHorizontal
+  ClipboardPaste,
+  MoreHorizontal,
+  SlidersHorizontal
 } from 'lucide-react';
 
 interface AppShellProps {
   activeTab: DashboardTab;
   onSelectTab: (tab: DashboardTab) => void;
   studentInfo: StudentInfo;
-  theme: 'dark' | 'light' | 'oled' | 'crimson';
-  onToggleTheme: () => void;
-  autoContrast?: boolean;
-  onToggleAutoContrast?: () => void;
+  theme?: 'dark' | 'light' | 'oled' | 'crimson';
   urgentDeadlineCount: number;
   onOpenSettings: () => void;
   onResetSampleData: () => void;
-  onOpenSisModal?: () => void;
-  onOpenCourseCatalogModal?: () => void;
+  onOpenRawTextModal?: () => void;
+  onOpenSideNav: () => void;
   children: React.ReactNode;
 }
 
@@ -46,14 +38,11 @@ export const AppShell: React.FC<AppShellProps> = ({
   onSelectTab,
   studentInfo,
   theme,
-  onToggleTheme,
-  autoContrast = true,
-  onToggleAutoContrast,
   urgentDeadlineCount,
   onOpenSettings,
   onResetSampleData,
-  onOpenSisModal,
-  onOpenCourseCatalogModal,
+  onOpenRawTextModal,
+  onOpenSideNav,
   children
 }) => {
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
@@ -72,18 +61,16 @@ export const AppShell: React.FC<AppShellProps> = ({
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-[#070913] p-0 sm:p-4 lg:p-6 flex items-center justify-center transition-colors">
-      {/* Main Rounded App Card Container - Edge-to-edge on mobile, rounded card on tablet/desktop */}
+      {/* Main Container */}
       <div className="w-full max-w-[1600px] min-h-screen sm:min-h-[92vh] bg-white dark:bg-[#0e1322] rounded-none sm:rounded-[32px] lg:rounded-[36px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] dark:shadow-none border-0 sm:border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col lg:flex-row transition-all relative">
         
         {/* =========================================================
             DESKTOP LEFT SIDEBAR (HUST Bách Khoa Crimson Red)
            ========================================================= */}
         <aside className="hidden lg:flex w-64 flex-shrink-0 bg-gradient-to-b from-[#dc2626] via-[#b91c1c] to-[#991b1b] text-white p-5 flex-col justify-between relative shadow-xl z-20">
-          
           {/* Top Logo & Brand */}
           <div>
             <div className="flex items-center justify-center mb-6">
-              {/* Graduate Cap Squircle Logo */}
               <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg shadow-red-950/20 transform hover:scale-105 transition-transform">
                 <GraduationCap className="w-8 h-8 text-white" />
               </div>
@@ -119,12 +106,12 @@ export const AppShell: React.FC<AppShellProps> = ({
             </nav>
           </div>
 
-          {/* Bottom Sidebar: Cohort Badge & Reset Action */}
+          {/* Bottom Sidebar */}
           <div className="pt-6 mt-6 border-t border-white/15 space-y-3">
             <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15">
               <span className="text-[10px] text-red-200 block font-mono font-medium">CHƯƠNG TRÌNH</span>
               <span className="text-xs font-bold text-white block truncate">
-                {studentInfo.major || 'ET-E4'} • {studentInfo.classCode || studentInfo.cohort || 'K66'}
+                {studentInfo.major || 'IT1'} • {studentInfo.classCode || studentInfo.cohort || 'K68'}
               </span>
             </div>
 
@@ -132,10 +119,10 @@ export const AppShell: React.FC<AppShellProps> = ({
               type="button"
               onClick={onResetSampleData}
               className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
-              title="Khôi phục dữ liệu mẫu Bách Khoa"
+              title="Khôi phục trạng thái database sạch"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Dữ Liệu Mẫu</span>
+              <span>Dữ Liệu Sạch</span>
             </button>
           </div>
         </aside>
@@ -145,7 +132,7 @@ export const AppShell: React.FC<AppShellProps> = ({
            ========================================================= */}
         <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f1d] overflow-y-auto pb-[calc(80px+max(env(safe-area-inset-bottom,0px),16px))] lg:pb-8">
           
-          {/* Top Bar Header / Mobile Native App Bar with Safe-Area */}
+          {/* Top Bar Header with Side Nav Drawer Button */}
           <header className="bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6 pt-3.5 sm:pt-4 pb-3 sm:pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sticky top-0 z-20">
             {/* Top row for Mobile (App Title + Logo) / Desktop search container */}
             <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
@@ -163,7 +150,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 </div>
               </div>
 
-              {/* Search Bar - Full on desktop, hidden on tiny screen or expandable */}
+              {/* Search Bar on desktop */}
               <div className="relative w-full max-w-md hidden sm:block">
                 <Search className="w-4 h-4 absolute left-3.5 top-2.5 text-slate-400" />
                 <input
@@ -173,94 +160,41 @@ export const AppShell: React.FC<AppShellProps> = ({
                 />
               </div>
 
-              {/* Mobile Profile & Notification pill */}
+              {/* Mobile Actions: Raw Text Import button & Side Nav Drawer button */}
               <div className="flex items-center gap-1.5 sm:hidden">
-                <button
-                  type="button"
-                  onClick={onToggleTheme}
-                  className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                  title="Chuyển theme"
-                >
-                  {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-400" />}
-                </button>
-                {onToggleAutoContrast && (
+                {onOpenRawTextModal && (
                   <button
                     type="button"
-                    onClick={onToggleAutoContrast}
-                    className={`p-1.5 rounded-full border transition-all ${
-                      autoContrast
-                        ? 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400'
-                        : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-400'
-                    }`}
-                    title="Tương phản tự động"
+                    onClick={onOpenRawTextModal}
+                    className="p-1.5 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 font-bold text-xs border border-red-200 dark:border-red-800"
+                    title="Dán văn bản SIS/QLĐT (Ctrl+A)"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <ClipboardPaste className="w-4 h-4" />
                   </button>
                 )}
                 <button
                   type="button"
-                  onClick={onOpenSettings}
-                  className="w-7 h-7 rounded-full bg-red-600 text-white font-bold text-[10px] flex items-center justify-center shadow-xs"
+                  onClick={onOpenSideNav}
+                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-600 active:scale-95 transition-all"
+                  title="Mở menu tính năng bên"
                 >
-                  {studentInfo.name ? studentInfo.name.charAt(0).toUpperCase() : 'BK'}
+                  <Menu className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </button>
               </div>
             </div>
 
-            {/* Desktop Actions & Student Profile Card */}
+            {/* Desktop Actions */}
             <div className="hidden sm:flex items-center gap-2 sm:gap-3 self-end sm:self-auto">
-              {/* Quick SIS & Prereq scrapers */}
-              {onOpenSisModal && (
+              {/* Quick Raw Text SIS/QLĐT Import */}
+              {onOpenRawTextModal && (
                 <button
                   type="button"
-                  onClick={onOpenSisModal}
-                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 font-bold text-xs border border-red-200 dark:border-red-800 transition-colors"
-                  title="Dán dữ liệu bảng điểm & CTĐT từ SIS / QLĐT HUST"
+                  onClick={onOpenRawTextModal}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 font-bold text-xs border border-red-200 dark:border-red-800 transition-colors shadow-xs"
+                  title="Dán nhanh văn bản SIS/QLĐT (Ctrl+A)"
                 >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Nhập SIS</span>
-                </button>
-              )}
-
-              {onOpenCourseCatalogModal && (
-                <button
-                  type="button"
-                  onClick={onOpenCourseCatalogModal}
-                  className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/30 hover:bg-amber-100 text-amber-700 dark:text-amber-300 font-bold text-xs border border-amber-200 dark:border-amber-800 transition-colors"
-                  title="Cào & ghép học phần tiên quyết từ CourseLists.aspx"
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>HP Tiên Quyết</span>
-                </button>
-              )}
-
-              {/* Theme Toggle Button */}
-              <button
-                type="button"
-                onClick={onToggleTheme}
-                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-600 transition-colors"
-                title={theme === 'light' ? 'Chuyển sang Giao diện Tối' : 'Chuyển sang Giao diện Sáng'}
-              >
-                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4 text-amber-400" />}
-              </button>
-
-              {/* Auto-Contrast (WCAG AAA) Quick Toggle */}
-              {onToggleAutoContrast && (
-                <button
-                  type="button"
-                  onClick={onToggleAutoContrast}
-                  className={`p-2 rounded-full border transition-all ${
-                    autoContrast
-                      ? 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
-                  }`}
-                  title={
-                    autoContrast
-                      ? 'Chế độ Tự Động Tương Phản WCAG AAA đang BẬT: Đảm bảo độ tương phản cao toàn bộ content'
-                      : 'Bật chế độ Tự Động Tương Phản WCAG AAA'
-                  }
-                >
-                  <Sparkles className="w-4 h-4" />
+                  <ClipboardPaste className="w-3.5 h-3.5" />
+                  <span>Dán SIS / QLĐT (Ctrl+A)</span>
                 </button>
               )}
 
@@ -279,38 +213,27 @@ export const AppShell: React.FC<AppShellProps> = ({
                 </button>
               </div>
 
-              {/* Student Profile Pill - Clickable to open settings */}
+              {/* Side Navigation Drawer Trigger Button */}
               <button
                 type="button"
-                onClick={onOpenSettings}
-                className="flex items-center gap-2.5 pl-2 border-l border-slate-200 dark:border-slate-800 hover:opacity-85 transition-opacity text-left cursor-pointer"
-                title="Cài đặt thông tin cá nhân & thang điểm"
+                onClick={onOpenSideNav}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition-all font-semibold text-xs active:scale-95"
+                title="Mở menu cạnh bên: Tài khoản, Chế độ tối, Bảng màu & Sắp xếp thẻ"
               >
-                <div className="w-9 h-9 rounded-full bg-red-600 p-0.5 shadow-sm flex items-center justify-center">
-                  <div className="w-full h-full rounded-full bg-red-700 flex items-center justify-center font-bold text-xs text-white">
-                    {studentInfo.name ? studentInfo.name.charAt(0).toUpperCase() : 'BK'}
-                  </div>
-                </div>
-                <div className="hidden sm:block text-left">
-                  <span className="text-xs font-bold text-slate-900 dark:text-white block leading-tight">
-                    {studentInfo.name || 'Sinh Viên HUST'}
-                  </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                    Năm 3 • {studentInfo.major || 'ET-E4'}
-                  </span>
-                </div>
+                <SlidersHorizontal className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                <span>Menu Điều Khiển</span>
               </button>
             </div>
           </header>
 
-          {/* Body Content Container - Extra bottom padding on mobile so Bottom Nav doesn't overlap */}
+          {/* Body Content Container */}
           <div className="p-3 sm:p-6 lg:p-8 space-y-5 sm:space-y-6 flex-1 pb-24 lg:pb-8">
             {children}
           </div>
         </main>
 
         {/* =========================================================
-            MOBILE ANDROID BOTTOM NAVIGATION BAR (Fixed at Bottom with Safe-Area)
+            MOBILE ANDROID BOTTOM NAVIGATION BAR
            ========================================================= */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/90 px-2 pt-2 pb-[max(env(safe-area-inset-bottom,0px),14px)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex items-center justify-around select-none">
           {/* Tab 1: Dashboard */}
@@ -409,9 +332,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           </button>
         </nav>
 
-        {/* =========================================================
-            MOBILE MORE UTILITIES BOTTOM SHEET (Modern Redesigned Drawer)
-           ========================================================= */}
+        {/* Mobile More Sheet */}
         {mobileMoreOpen && (
           <div 
             className="lg:hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex flex-col justify-end animate-in fade-in duration-200"
@@ -421,7 +342,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               className="bg-white dark:bg-[#111827] rounded-t-[32px] p-5 pt-3 border-t border-slate-200/80 dark:border-slate-800 shadow-[0_-15px_40px_rgba(0,0,0,0.3)] space-y-4 animate-in slide-in-from-bottom duration-250 max-h-[88vh] overflow-y-auto pb-[max(env(safe-area-inset-bottom,0px),24px)] select-none"
               onClick={e => e.stopPropagation()}
             >
-              {/* Top Pull Handle Indicator */}
+              {/* Pull Handle */}
               <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-1 cursor-grab opacity-80" />
 
               {/* Student Profile Card in Sheet */}
@@ -436,11 +357,11 @@ export const AppShell: React.FC<AppShellProps> = ({
                         {studentInfo.name || 'Sinh viên Bách Khoa'}
                       </span>
                       <span className="px-1.5 py-0.5 rounded-full bg-red-600/10 text-red-600 dark:text-red-400 font-mono text-[9px] font-bold">
-                        {studentInfo.cohort || 'K66'}
+                        {studentInfo.cohort || 'K68'}
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block">
-                      {studentInfo.studentId ? `MSSV: ${studentInfo.studentId}` : 'HUST Student'} • {studentInfo.major || 'ET-E4'}
+                      {studentInfo.studentId ? `MSSV: ${studentInfo.studentId}` : 'HUST Student'} • {studentInfo.major || 'IT1'}
                     </span>
                   </div>
                 </div>
@@ -505,54 +426,49 @@ export const AppShell: React.FC<AppShellProps> = ({
                 </div>
               </div>
 
-              {/* SECTION 2: ĐỒNG BỘ DỮ LIỆU SIÊU TỐC (Mobile-First) */}
+              {/* SECTION 2: ĐỒNG BỘ DỮ LIỆU SIÊU TỐC */}
               <div>
                 <div className="flex items-center justify-between mb-2 px-1">
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
-                    Đồng Bộ Dữ Liệu
-                  </span>
-                  <span className="text-[9px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded-full">
-                    Không cần F12
+                    Đồng Bộ & Điều Khiển
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
-                  {onOpenCourseCatalogModal && (
+                  {onOpenRawTextModal && (
                     <button
                       type="button"
                       onClick={() => {
-                        onOpenCourseCatalogModal();
+                        onOpenRawTextModal();
                         setMobileMoreOpen(false);
                       }}
-                      className="p-3 rounded-2xl border border-amber-200/80 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97] hover:border-amber-400"
+                      className="p-3 rounded-2xl border border-red-200/80 dark:border-red-900/50 bg-red-50/60 dark:bg-red-950/20 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97] hover:border-red-400"
                     >
-                      <div className="p-2 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex-shrink-0">
-                        <BookOpen className="w-4 h-4" />
+                      <div className="p-2 rounded-xl bg-red-500/15 text-red-600 dark:text-red-400 flex-shrink-0">
+                        <ClipboardPaste className="w-4 h-4" />
                       </div>
                       <div>
-                        <span className="text-xs font-bold block text-slate-900 dark:text-white">Kho Môn & Tiên Quyết</span>
-                        <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold">1-Chạm Đồng Bộ Ngành</span>
+                        <span className="text-xs font-bold block text-slate-900 dark:text-white">Dán SIS / QLĐT</span>
+                        <span className="text-[10px] text-red-600 dark:text-red-400 font-semibold">Tự động lọc rác (Ctrl+A)</span>
                       </div>
                     </button>
                   )}
 
-                  {onOpenSisModal && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onOpenSisModal();
-                        setMobileMoreOpen(false);
-                      }}
-                      className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97]"
-                    >
-                      <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex-shrink-0">
-                        <Upload className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold block text-slate-900 dark:text-white">Nhập SIS Nhanh</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">Dán bảng điểm / TKB</span>
-                      </div>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenSideNav();
+                      setMobileMoreOpen(false);
+                    }}
+                    className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97]"
+                  >
+                    <div className="p-2 rounded-xl bg-slate-500/10 text-slate-600 dark:text-slate-400 flex-shrink-0">
+                      <SlidersHorizontal className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Menu Điều Khiển</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Giao diện, sắp xếp</span>
+                    </div>
+                  </button>
                 </div>
               </div>
 
@@ -593,8 +509,8 @@ export const AppShell: React.FC<AppShellProps> = ({
                       <RotateCcw className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Dữ Liệu Mẫu</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Khôi phục mẫu BK</span>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Dữ Liệu Sạch</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Khôi phục ban đầu</span>
                     </div>
                   </button>
                 </div>
@@ -606,4 +522,3 @@ export const AppShell: React.FC<AppShellProps> = ({
     </div>
   );
 };
-

@@ -60,8 +60,16 @@ export const CourseNodeCard: React.FC<CourseNodeCardProps> = ({
     }
   };
 
-  // Xác định viền card theo tương tác đồ thị
+  // Xác định viền card theo tương tác đồ thị & độ khó & học lại
   const getHighlightStyle = () => {
+    // 1. Học phần học lại (isRetake): Tô màu đỏ đậm nổi bật
+    if (course.isRetake) {
+      if (isSelected) {
+        return 'border-red-600 bg-red-900/60 ring-2 ring-red-500 shadow-lg text-white';
+      }
+      return 'border-red-700 bg-red-950/80 hover:bg-red-900/70 shadow-md ring-1 ring-red-600 text-white';
+    }
+
     if (isSelected) {
       return 'border-red-600 dark:border-red-500 bg-red-50 dark:bg-red-950/30 ring-2 ring-red-500/50 shadow-md';
     }
@@ -71,6 +79,17 @@ export const CourseNodeCard: React.FC<CourseNodeCardProps> = ({
     if (isHighlightedDependent) {
       return 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-950/30 ring-2 ring-blue-400/50 shadow-md';
     }
+
+    // 2. Độ khó >= 4.5 sao: Tô màu đỏ nhạt
+    if (course.difficulty && course.difficulty >= 4.5) {
+      return 'border-red-300 dark:border-red-800/80 bg-red-50/75 dark:bg-red-950/30 hover:bg-red-100/80 dark:hover:bg-red-950/50 shadow-sm';
+    }
+
+    // 3. Độ khó >= 4.0 và < 4.5 sao: Tô màu vàng nhạt
+    if (course.difficulty && course.difficulty >= 4.0 && course.difficulty < 4.5) {
+      return 'border-amber-300 dark:border-amber-800/80 bg-amber-50/75 dark:bg-amber-950/30 hover:bg-amber-100/80 dark:hover:bg-amber-950/50 shadow-sm';
+    }
+
     return 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#131b2e] hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-[#162037] shadow-sm';
   };
 
@@ -79,7 +98,12 @@ export const CourseNodeCard: React.FC<CourseNodeCardProps> = ({
       onClick={() => onSelect(course)}
       className={`rounded-xl border p-3 cursor-pointer transition-all duration-150 relative flex flex-col justify-between ${getHighlightStyle()}`}
     >
-      {/* Top Banner Tag if Highlighted */}
+      {/* Top Banner Tag if Highlighted or Retake */}
+      {course.isRetake && (
+        <div className="absolute -top-2.5 right-2 px-1.5 py-0.2 rounded bg-red-700 text-white text-[9px] font-black uppercase tracking-wider shadow">
+          Học lại
+        </div>
+      )}
       {isHighlightedPrereq && (
         <div className="absolute -top-2.5 left-2 px-1.5 py-0.2 rounded bg-amber-500 text-slate-900 text-[9px] font-extrabold uppercase tracking-wider shadow">
           Tiên quyết cần có

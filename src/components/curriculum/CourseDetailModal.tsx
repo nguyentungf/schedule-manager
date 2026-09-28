@@ -513,7 +513,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                Điểm Quá Trình (D_qt)
+                Điểm quá trình
               </label>
               <input
                 type="number"
@@ -529,7 +529,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
             <div>
               <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                Điểm Cuối Kỳ (D_ck)
+                Điểm cuối kỳ
               </label>
               <input
                 type="number"

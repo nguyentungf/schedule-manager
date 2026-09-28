@@ -23,14 +23,15 @@ export const BUILT_IN_CURRICULA: Record<string, Curriculum> = {
 
 export const AVAILABLE_MAJORS = [
   { code: 'IT1', name: 'IT1 - Khoa học Máy tính', faculty: 'Trường CNTT&TT' },
-  { code: 'IT2', name: 'IT2 - Kỹ thuật Phần mềm', faculty: 'Trường CNTT&TT' },
+  { code: 'IT2', name: 'IT2 - Kỹ thuật Máy tính', faculty: 'Trường CNTT&TT' },
   { code: 'EE1', name: 'EE1 - Kỹ thuật Điện', faculty: 'Trường Điện - Điện tử' },
   { code: 'EE2', name: 'EE2 - Kỹ thuật Điều khiển & Tự động hóa', faculty: 'Trường Điện - Điện tử' },
   { code: 'ET1', name: 'ET1 - Kỹ thuật Điện tử - Viễn thông', faculty: 'Trường Điện - Điện tử' },
   { code: 'ET2', name: 'ET2 - Kỹ thuật Y sinh', faculty: 'Trường Điện - Điện tử' },
-  { code: 'ET-E4', name: 'ET-E4 - CTTT Hệ thống Nhúng & IoT', faculty: 'Trường Điện - Điện tử (Elitech)' },
-  { code: 'ET-E5', name: 'ET-E5 - Truyền thông số & Đa phương tiện', faculty: 'Trường Điện - Điện tử' },
-  { code: 'ET-E16', name: 'ET-E16 - Kỹ thuật Vi điện tử & Bán dẫn', faculty: 'Trường Điện - Điện tử (Elitech)' },
+  { code: 'ET-E4', name: 'ET-E4 - CTTT Kỹ thuật Điện tử - Viễn thông (Elitech)', faculty: 'Trường Điện - Điện tử' },
+  { code: 'ET-E5', name: 'ET-E5 - CTTT Kỹ thuật Y sinh (Elitech)', faculty: 'Trường Điện - Điện tử' },
+  { code: 'ET-E9', name: 'ET-E9 - CTTT Hệ thống Nhúng & IoT (Elitech)', faculty: 'Trường Điện - Điện tử' },
+  { code: 'ET-E16', name: 'ET-E16 - CTTT Truyền thông số & Đa phương tiện (Elitech)', faculty: 'Trường Điện - Điện tử' },
 ];
 
 export function getCurriculum(code: string): Curriculum {

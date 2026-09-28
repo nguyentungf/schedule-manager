@@ -8,7 +8,7 @@ import { ParsedCourseResult, ParsedStudentInfo } from '../engines/sisParser';
 import { getCurriculum, AVAILABLE_MAJORS } from '../data/curricula';
 import confetti from 'canvas-confetti';
 
-const STORAGE_KEY = 'HUST_DASHBOARD_DATA_V1';
+const STORAGE_KEY = 'HUST_DASHBOARD_DATA_V2';
 
 export function useDashboardState() {
   const [state, setState] = useState<DashboardState>(() => {
@@ -16,13 +16,18 @@ export function useDashboardState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        // Nếu là dữ liệu mẫu cũ (Nguyễn Văn Bách), xóa để đảm bảo database sạch sẽ
+        if (parsed.studentInfo?.name === 'Nguyễn Văn Bách' || parsed.studentInfo?.studentId === '20210001') {
+          return getInitialSampleState();
+        }
         // Đảm bảo có mảng schedule và settings hợp lệ
         if (!parsed.schedule) {
           parsed.schedule = [];
         }
         if (!parsed.settings?.gradeScales) {
           parsed.settings = {
-            theme: 'dark',
+            theme: 'crimson',
+            themePalette: 'crimson',
             soundEnabled: true,
             urgentThresholdHours: 24,
             warningThresholdHours: 72,
@@ -36,13 +41,14 @@ export function useDashboardState() {
               minD: 4.0,
               failFinalExamMin: 3.0
             },
-            autoContrast: true
+            autoContrast: true,
+            dashboardCardOrder: ['hero', 'kpi', 'courses', 'deadlines']
           };
         }
         return parsed;
       }
     } catch (e) {
-      console.warn('Không thể đọc dữ liệu từ localStorage, sử dụng dữ liệu mẫu.', e);
+      console.warn('Không thể đọc dữ liệu từ localStorage, sử dụng dữ liệu sạch ban đầu.', e);
     }
     return getInitialSampleState();
   });
@@ -428,6 +434,59 @@ export function useDashboardState() {
     });
   }, []);
 
+  // Miễn từng học phần tiếng Anh cụ thể theo chứng chỉ ngoại ngữ (IELTS, TOEIC...)
+  const updateEnglishExemptions = useCallback((exemptCodes: string[]) => {
+    setState(prev => {
+      const codeSet = new Set(exemptCodes.map(c => c.toUpperCase().trim()));
+      const updatedCourses = prev.courses.map(c => {
+        const isTarget = codeSet.has(c.code.toUpperCase().trim());
+        const isEng = c.isEnglishCourse || c.code.startsWith('FL') || /tiếng anh|ngoại ngữ|english/i.test(c.name);
+        if (isTarget) {
+          return {
+            ...c,
+            isEnglishCourse: true,
+            status: !c.isLearned ? ('passed' as const) : c.status,
+            isRequired: false
+          };
+        } else if (isEng && !c.isLearned && !c.gradeScale4) {
+          return {
+            ...c,
+            isRequired: true,
+            status: c.status === 'passed' ? ('planned' as const) : c.status
+          };
+        }
+        return c;
+      });
+
+      return {
+        ...prev,
+        studentInfo: {
+          ...prev.studentInfo,
+          exemptEnglishCourses: exemptCodes,
+          exemptEnglish: exemptCodes.length > 0
+        },
+        settings: {
+          ...prev.settings,
+          exemptEnglish: exemptCodes.length > 0
+        },
+        courses: updatedCourses,
+        lastUpdated: new Date().toISOString()
+      };
+    });
+  }, []);
+
+  // Cập nhật thứ tự sắp xếp các thẻ kéo thả trên Dashboard
+  const updateDashboardCardOrder = useCallback((order: string[]) => {
+    setState(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        dashboardCardOrder: order
+      },
+      lastUpdated: new Date().toISOString()
+    }));
+  }, []);
+
   const mergeCourseCatalog = useCallback((catalogList: Array<{
     code: string;
     name?: string;
@@ -609,6 +668,8 @@ export function useDashboardState() {
     importFullState,
     mergeSisCourses,
     toggleEnglishExemption,
+    updateEnglishExemptions,
+    updateDashboardCardOrder,
     mergeCourseCatalog,
     importCoursesFromExcel,
     importScheduleFromExcel,

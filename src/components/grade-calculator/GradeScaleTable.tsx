@@ -23,8 +23,8 @@ export const GradeScaleTable: React.FC = () => {
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-mono text-[10px] uppercase border-b border-slate-200 dark:border-slate-800">
             <tr>
-              <th className="p-3">Thang 10 (D_hp)</th>
-              <th className="p-3">Điểm Chữ</th>
+              <th className="p-3">Điểm học phần (thang 10)</th>
+              <th className="p-3">Điểm chữ</th>
               <th className="p-3">Thang 4</th>
               <th className="p-3">Xếp loại</th>
             </tr>
@@ -51,8 +51,8 @@ export const GradeScaleTable: React.FC = () => {
       </div>
 
       <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
-        <p>• <strong>Điều kiện qua môn:</strong> Điểm thi cuối kỳ D_ck ≥ 3.0 và Điểm học phần D_hp ≥ 4.0.</p>
-        <p>• <strong>Học cải thiện:</strong> Khi học lại để cải thiện điểm chữ D, D+, C, C+, công thức CPA tính điểm cao nhất trong các lần học.</p>
+        <p>• <strong>Điều kiện qua môn:</strong> Điểm thi cuối kỳ đạt từ 3.0 trở lên và điểm học phần tổng kết đạt từ 4.0 trở lên.</p>
+        <p>• <strong>Học cải thiện:</strong> Khi học lại để cải thiện điểm chữ D, D+, C, C+, công thức CPA tự động tính điểm cao nhất trong các lần học.</p>
       </div>
     </div>
   );

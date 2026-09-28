@@ -7,7 +7,7 @@ import { ExcelUploadModal } from '../common/ExcelUploadModal';
 import { buildDependencyGraph } from '../../engines/dagEngine';
 import { AVAILABLE_MAJORS } from '../../data/curricula';
 import { KNOWN_HUST_COURSE_CATALOG } from '../../engines/courseCatalogParser';
-import { GitFork, X, GraduationCap, Layers, LayoutGrid, FileSpreadsheet, Plus, Edit3, ArrowRight, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { GitFork, X, GraduationCap, Layers, LayoutGrid, FileSpreadsheet, Plus, Edit3, ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, Check } from 'lucide-react';
 
 interface CurriculumViewProps {
   courses: Course[];
@@ -37,7 +37,8 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
   const [isNewCourse, setIsNewCourse] = useState(false);
   const [isBatchEditModalOpen, setIsBatchEditModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<'all' | CourseStatus>('all');
-  const [viewGroupBy, setViewGroupBy] = useState<'year' | 'all'>('year'); // Mặc định hiển thị theo Năm Học hoặc Xem Toàn Bộ
+  const [viewGroupBy, setViewGroupBy] = useState<'year' | 'all'>('year');
+  const [isMajorDropdownOpen, setIsMajorDropdownOpen] = useState(false);
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
 
   // Xây dựng DAG đồ thị phụ thuộc
@@ -138,21 +139,58 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
             </div>
           </div>
 
-          {/* Major Selector Dropdown */}
+          {/* Custom Cohesive Major Dropdown Popover */}
           {onSelectMajor && (
-            <div className="sm:ml-4 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
-              <GraduationCap className="w-4 h-4 text-red-600 dark:text-red-400" />
-              <select
-                value={majorCode}
-                onChange={e => onSelectMajor(e.target.value)}
-                className="bg-transparent text-slate-800 dark:text-white font-bold focus:outline-none cursor-pointer"
+            <div className="relative sm:ml-4">
+              <button
+                type="button"
+                onClick={() => setIsMajorDropdownOpen(!isMajorDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-red-500/50 transition-all text-xs font-bold text-slate-800 dark:text-white shadow-xs"
               >
-                {AVAILABLE_MAJORS.map(m => (
-                  <option key={m.code} value={m.code} className="bg-white dark:bg-slate-900 text-slate-800 dark:text-white">
-                    {m.name}
-                  </option>
-                ))}
-              </select>
+                <GraduationCap className="w-4 h-4 text-red-600 dark:text-red-400" />
+                <span>{AVAILABLE_MAJORS.find(m => m.code === majorCode)?.name || majorCode}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isMajorDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isMajorDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-30"
+                    onClick={() => setIsMajorDropdownOpen(false)}
+                  />
+                  <div className="absolute left-0 top-full mt-1.5 z-40 w-72 sm:w-80 bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl p-1.5 space-y-1 animate-in fade-in slide-in-from-top-2 duration-150">
+                    <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono">
+                      Chọn Ngành Đào Tạo HUST
+                    </div>
+                    <div className="max-h-64 overflow-y-auto space-y-0.5">
+                      {AVAILABLE_MAJORS.map(m => {
+                        const isSelected = m.code === majorCode;
+                        return (
+                          <button
+                            key={m.code}
+                            type="button"
+                            onClick={() => {
+                              onSelectMajor(m.code);
+                              setIsMajorDropdownOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between p-2 rounded-xl text-left text-xs transition-all ${
+                              isSelected
+                                ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 font-bold'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            }`}
+                          >
+                            <div>
+                              <div className="font-semibold">{m.name}</div>
+                              <span className="text-[10px] text-slate-400">{m.faculty}</span>
+                            </div>
+                            {isSelected && <Check className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

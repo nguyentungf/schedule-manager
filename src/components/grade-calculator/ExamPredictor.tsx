@@ -29,7 +29,7 @@ export const ExamPredictor: React.FC = () => {
         </div>
         <div>
           <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
-            Máy Tính Điểm Thi Cuối Kỳ Tối Thiểu (HUST D_ck_min)
+            Máy tính điểm thi cuối kỳ tối thiểu
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Tính điểm thi cuối kỳ tối thiểu cần đạt để chạm các mốc A, B+, B, C, D kèm kiểm soát điểm liệt 3.0
@@ -41,7 +41,7 @@ export const ExamPredictor: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
         <div>
           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            Điểm quá trình (D_qt)
+            Điểm quá trình
           </label>
           <div className="flex items-center gap-2">
             <input
@@ -105,11 +105,11 @@ export const ExamPredictor: React.FC = () => {
           <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-[11px] text-slate-700 dark:text-slate-300 space-y-1">
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Công thức tính:</span>
-              <span className="font-mono text-slate-900 dark:text-white">D_hp = {weightQt} * D_qt + {weightCk} * D_ck</span>
+              <span className="font-medium text-slate-900 dark:text-white">Điểm học phần = {weightQt} × Quá trình + {weightCk} × Cuối kỳ</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Điểm liệt:</span>
-              <span className="font-bold text-rose-600 dark:text-rose-400">D_ck &lt; 3.0 -&gt; F (Trượt môn)</span>
+              <span className="font-bold text-rose-600 dark:text-rose-400">Điểm cuối kỳ &lt; 3.0: Trượt môn (F)</span>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export const ExamPredictor: React.FC = () => {
               <tr>
                 <th className="p-3">Mốc Chữ</th>
                 <th className="p-3">Thang 4</th>
-                <th className="p-3">Điểm Thi CK Tối Thiểu (D_ck_min)</th>
+                <th className="p-3">Điểm thi cuối kỳ tối thiểu</th>
                 <th className="p-3">Độ Khả Thi</th>
                 <th className="p-3">Lưu ý</th>
               </tr>
@@ -188,7 +188,7 @@ export const ExamPredictor: React.FC = () => {
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-red-600 dark:text-red-400" />
             <h4 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white tracking-tight">
-              Thanh Kéo Mô Phỏng Điểm Thi Thực Tế (D_ck)
+              Thanh kéo mô phỏng điểm thi thực tế
             </h4>
           </div>
           <div className="font-mono text-xs text-slate-600 dark:text-slate-300">

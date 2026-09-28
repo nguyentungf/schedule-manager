@@ -43,6 +43,8 @@ export interface ParsedStudentInfo {
   programName?: string;
   cohort?: string;
   major?: string;
+  majorName?: string;
+  classCode?: string;
 }
 
 export interface ParseReport {

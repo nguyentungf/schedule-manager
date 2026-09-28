@@ -18,22 +18,6 @@ export const InstructorsAndNotices: React.FC<InstructorsAndNoticesProps> = ({
   onOpenAddDeadline,
   onEditDeadline
 }) => {
-  // Trích xuất danh sách giảng viên từ TKB
-  const teachers = Array.from(
-    new Set(
-      schedule
-        .map(s => s.teacher?.trim())
-        .filter((t): t is string => !!t && t !== '')
-    )
-  ).slice(0, 4);
-
-  const fallbackTeachers = [
-    { name: 'PGS. TS. Nguyễn Văn A', title: 'Viện Điện tử - Viễn thông', avatar: '👨‍🏫' },
-    { name: 'TS. Trần Thị B', title: 'Khoa Toán - Tin', avatar: '👩‍🏫' },
-    { name: 'ThS. Lê Văn C', title: 'Trung tâm Máy tính', avatar: '🧑‍💻' },
-    { name: 'PGS. TS. Hoàng D', title: 'Bộ môn Mạch & Tín hiệu', avatar: '👨‍🔬' }
-  ];
-
   // Sắp xếp deadlines theo hạn chót gần nhất
   const sortedDeadlines = [...deadlines]
     .filter(d => !d.completed)
@@ -42,33 +26,6 @@ export const InstructorsAndNotices: React.FC<InstructorsAndNoticesProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 1. Course Instructors Section */}
-      <div className="bg-white dark:bg-[#131b2e] rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
-        <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center justify-between">
-          <span>Giảng Viên Phụ Trách (Instructors)</span>
-          <span className="text-[10px] text-red-600 dark:text-red-400 font-mono font-bold">Học kỳ 2024.1</span>
-        </h4>
-
-        {/* Circular Avatars Row */}
-        <div className="flex items-center gap-3 pt-1">
-          {fallbackTeachers.map((tch, idx) => (
-            <div
-              key={idx}
-              className="group relative flex flex-col items-center"
-              title={`${tch.name} (${tch.title})`}
-            >
-              <div className="w-12 h-12 rounded-full bg-red-600 p-0.5 shadow-md group-hover:scale-110 transition-transform cursor-pointer">
-                <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center text-xl">
-                  {tch.avatar}
-                </div>
-              </div>
-              <span className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 mt-1 max-w-[60px] truncate text-center">
-                {tch.name.split(' ').pop()}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* 2. Daily Notice & Deadlines */}
       <div className="bg-white dark:bg-[#131b2e] rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
