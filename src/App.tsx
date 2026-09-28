@@ -72,6 +72,7 @@ export const App: React.FC = () => {
   // Tích hợp Native Android: Màu Status Bar & Phím Back vật lý
   useEffect(() => {
     try {
+      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
       StatusBar.setBackgroundColor({ color: '#b91c1c' }).catch(() => {});
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
     } catch {
@@ -373,6 +374,7 @@ export const App: React.FC = () => {
         isOpen={isCourseCatalogModalOpen}
         onClose={() => setIsCourseCatalogModalOpen(false)}
         onMergeCatalog={mergeCourseCatalog}
+        initialMajorCode={state.studentInfo.major}
       />
 
       <SettingsModal

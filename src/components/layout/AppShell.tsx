@@ -143,10 +143,10 @@ export const AppShell: React.FC<AppShellProps> = ({
         {/* =========================================================
             RIGHT MAIN CONTENT AREA
            ========================================================= */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f1d] overflow-y-auto">
+        <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f1d] overflow-y-auto pb-[calc(80px+max(env(safe-area-inset-bottom,0px),16px))] lg:pb-8">
           
-          {/* Top Bar Header / Mobile Native App Bar */}
-          <header className="bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sticky top-0 z-20">
+          {/* Top Bar Header / Mobile Native App Bar with Safe-Area */}
+          <header className="bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6 pt-3.5 sm:pt-4 pb-3 sm:pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sticky top-0 z-20">
             {/* Top row for Mobile (App Title + Logo) / Desktop search container */}
             <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
               <div className="flex items-center gap-2.5 lg:hidden">
@@ -310,23 +310,23 @@ export const AppShell: React.FC<AppShellProps> = ({
         </main>
 
         {/* =========================================================
-            MOBILE ANDROID BOTTOM NAVIGATION BAR (Fixed at Bottom)
+            MOBILE ANDROID BOTTOM NAVIGATION BAR (Fixed at Bottom with Safe-Area)
            ========================================================= */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800/90 px-1 py-1 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex items-center justify-around">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-slate-800/90 px-2 pt-2 pb-[max(env(safe-area-inset-bottom,0px),14px)] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.5)] flex items-center justify-around select-none">
           {/* Tab 1: Dashboard */}
           <button
             type="button"
             onClick={() => onSelectTab('dashboard')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all relative ${
               activeTab === 'dashboard'
                 ? 'text-red-600 dark:text-red-400 font-bold'
-                : 'text-slate-500 dark:text-slate-400'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {activeTab === 'dashboard' && (
               <span className="absolute top-0 w-8 h-1 bg-red-600 dark:bg-red-500 rounded-full" />
             )}
-            <div className={`p-1 rounded-xl transition-transform ${activeTab === 'dashboard' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105' : ''}`}>
+            <div className={`p-1.5 rounded-xl transition-transform ${activeTab === 'dashboard' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105 shadow-xs' : ''}`}>
               <LayoutDashboard className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">Tổng Quan</span>
@@ -336,16 +336,16 @@ export const AppShell: React.FC<AppShellProps> = ({
           <button
             type="button"
             onClick={() => onSelectTab('schedule')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all relative ${
               activeTab === 'schedule'
                 ? 'text-red-600 dark:text-red-400 font-bold'
-                : 'text-slate-500 dark:text-slate-400'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {activeTab === 'schedule' && (
               <span className="absolute top-0 w-8 h-1 bg-red-600 dark:bg-red-500 rounded-full" />
             )}
-            <div className={`p-1 rounded-xl transition-transform ${activeTab === 'schedule' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105' : ''}`}>
+            <div className={`p-1.5 rounded-xl transition-transform ${activeTab === 'schedule' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105 shadow-xs' : ''}`}>
               <Calendar className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">Lịch TKB</span>
@@ -355,16 +355,16 @@ export const AppShell: React.FC<AppShellProps> = ({
           <button
             type="button"
             onClick={() => onSelectTab('curriculum')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all relative ${
               activeTab === 'curriculum'
                 ? 'text-red-600 dark:text-red-400 font-bold'
-                : 'text-slate-500 dark:text-slate-400'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {activeTab === 'curriculum' && (
               <span className="absolute top-0 w-8 h-1 bg-red-600 dark:bg-red-500 rounded-full" />
             )}
-            <div className={`p-1 rounded-xl transition-transform ${activeTab === 'curriculum' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105' : ''}`}>
+            <div className={`p-1.5 rounded-xl transition-transform ${activeTab === 'curriculum' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105 shadow-xs' : ''}`}>
               <GitFork className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">CTĐT</span>
@@ -374,16 +374,16 @@ export const AppShell: React.FC<AppShellProps> = ({
           <button
             type="button"
             onClick={() => onSelectTab('grade-calculator')}
-            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all relative ${
               activeTab === 'grade-calculator'
                 ? 'text-red-600 dark:text-red-400 font-bold'
-                : 'text-slate-500 dark:text-slate-400'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {activeTab === 'grade-calculator' && (
               <span className="absolute top-0 w-8 h-1 bg-red-600 dark:bg-red-500 rounded-full" />
             )}
-            <div className={`p-1 rounded-xl transition-transform ${activeTab === 'grade-calculator' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105' : ''}`}>
+            <div className={`p-1.5 rounded-xl transition-transform ${activeTab === 'grade-calculator' ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105 shadow-xs' : ''}`}>
               <Calculator className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">Tính Điểm</span>
@@ -393,16 +393,16 @@ export const AppShell: React.FC<AppShellProps> = ({
           <button
             type="button"
             onClick={() => setMobileMoreOpen(true)}
-            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all relative ${
               ['planner', 'sis', 'settings'].includes(activeTab) || mobileMoreOpen
                 ? 'text-red-600 dark:text-red-400 font-bold'
-                : 'text-slate-500 dark:text-slate-400'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
             {(['planner', 'sis', 'settings'].includes(activeTab) || mobileMoreOpen) && (
               <span className="absolute top-0 w-8 h-1 bg-red-600 dark:bg-red-500 rounded-full" />
             )}
-            <div className={`p-1 rounded-xl transition-transform ${['planner', 'sis', 'settings'].includes(activeTab) || mobileMoreOpen ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105' : ''}`}>
+            <div className={`p-1.5 rounded-xl transition-transform ${['planner', 'sis', 'settings'].includes(activeTab) || mobileMoreOpen ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 scale-105 shadow-xs' : ''}`}>
               <MoreHorizontal className="w-5 h-5" />
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">Tiện Ích</span>
@@ -410,160 +410,194 @@ export const AppShell: React.FC<AppShellProps> = ({
         </nav>
 
         {/* =========================================================
-            MOBILE MORE UTILITIES BOTTOM SHEET (Modal Drawer)
+            MOBILE MORE UTILITIES BOTTOM SHEET (Modern Redesigned Drawer)
            ========================================================= */}
         {mobileMoreOpen && (
           <div 
-            className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex flex-col justify-end animate-in fade-in duration-200"
+            className="lg:hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex flex-col justify-end animate-in fade-in duration-200"
             onClick={() => setMobileMoreOpen(false)}
           >
             <div 
-              className="bg-white dark:bg-[#131b2e] rounded-t-[28px] p-5 border-t border-slate-200 dark:border-slate-700 shadow-2xl space-y-4 animate-in slide-in-from-bottom duration-250 max-h-[85vh] overflow-y-auto"
+              className="bg-white dark:bg-[#111827] rounded-t-[32px] p-5 pt-3 border-t border-slate-200/80 dark:border-slate-800 shadow-[0_-15px_40px_rgba(0,0,0,0.3)] space-y-4 animate-in slide-in-from-bottom duration-250 max-h-[88vh] overflow-y-auto pb-[max(env(safe-area-inset-bottom,0px),24px)] select-none"
               onClick={e => e.stopPropagation()}
             >
-              {/* Sheet Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-red-600 flex items-center justify-center text-white">
-                    <GraduationCap className="w-4 h-4" />
+              {/* Top Pull Handle Indicator */}
+              <div className="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto my-1 cursor-grab opacity-80" />
+
+              {/* Student Profile Card in Sheet */}
+              <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-red-500/10 via-rose-500/5 to-transparent border border-red-200/60 dark:border-red-900/40">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white font-black text-sm flex items-center justify-center shadow-md shadow-red-950/20">
+                    {studentInfo.name ? studentInfo.name.charAt(0).toUpperCase() : 'BK'}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Tiện Ích & Mở Rộng</h3>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400">HUST Smart Student Portal</p>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[170px]">
+                        {studentInfo.name || 'Sinh viên Bách Khoa'}
+                      </span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-red-600/10 text-red-600 dark:text-red-400 font-mono text-[9px] font-bold">
+                        {studentInfo.cohort || 'K66'}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono block">
+                      {studentInfo.studentId ? `MSSV: ${studentInfo.studentId}` : 'HUST Student'} • {studentInfo.major || 'ET-E4'}
+                    </span>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setMobileMoreOpen(false)}
-                  className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500"
+                  className="p-2 rounded-xl bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white shadow-xs border border-slate-200/60 dark:border-slate-700 transition-all active:scale-90"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Grid of Utilities */}
-              <div className="grid grid-cols-2 gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    onSelectTab('planner');
-                    setMobileMoreOpen(false);
-                  }}
-                  className={`p-3 rounded-2xl border text-left flex items-start gap-2.5 transition-all ${
-                    activeTab === 'planner'
-                      ? 'bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400'
-                      : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                    <Compass className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold block text-slate-900 dark:text-white">Dự Đoán GPA</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Mô hình OLS ML</span>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    onSelectTab('sis');
-                    setMobileMoreOpen(false);
-                  }}
-                  className={`p-3 rounded-2xl border text-left flex items-start gap-2.5 transition-all ${
-                    activeTab === 'sis'
-                      ? 'bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400'
-                      : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    <Database className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold block text-slate-900 dark:text-white">Cổng SIS / QLĐT</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Bảng điểm & CTĐT</span>
-                  </div>
-                </button>
-
-                {onOpenSisModal && (
+              {/* SECTION 1: LỘ TRÌNH & HỌC TẬP */}
+              <div>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
+                    Học Tập & Dự Đoán
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
                   <button
                     type="button"
                     onClick={() => {
-                      onOpenSisModal();
+                      onSelectTab('planner');
                       setMobileMoreOpen(false);
                     }}
-                    className="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300"
+                    className={`p-3 rounded-2xl border text-left flex items-start gap-2.5 transition-all active:scale-[0.97] ${
+                      activeTab === 'planner'
+                        ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-300 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-900/90 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                    }`}
                   >
-                    <div className="p-2 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400">
-                      <Upload className="w-4 h-4" />
+                    <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex-shrink-0">
+                      <Compass className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Nhập SIS Nhanh</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Dán bảng điểm</span>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Dự Đoán GPA</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Hồi quy OLS ML</span>
                     </div>
                   </button>
-                )}
 
-                {onOpenCourseCatalogModal && (
                   <button
                     type="button"
                     onClick={() => {
-                      onOpenCourseCatalogModal();
+                      onSelectTab('sis');
                       setMobileMoreOpen(false);
                     }}
-                    className="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300"
+                    className={`p-3 rounded-2xl border text-left flex items-start gap-2.5 transition-all active:scale-[0.97] ${
+                      activeTab === 'sis'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-900/90 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                    }`}
                   >
-                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                      <BookOpen className="w-4 h-4" />
+                    <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                      <Database className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold block text-slate-900 dark:text-white">HP Tiên Quyết</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Cào CourseLists</span>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Cổng SIS / QLĐT</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Xem tiến độ & điểm</span>
                     </div>
                   </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    onOpenSettings();
-                    setMobileMoreOpen(false);
-                  }}
-                  className="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 col-span-2 sm:col-span-1"
-                >
-                  <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-                    <Settings className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold block text-slate-900 dark:text-white">Cài Đặt Hệ Thống</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Thang điểm 4-10, tài khoản</span>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    onResetSampleData();
-                    setMobileMoreOpen(false);
-                  }}
-                  className="p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 col-span-2 sm:col-span-1"
-                >
-                  <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
-                    <RotateCcw className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold block text-slate-900 dark:text-white">Dữ Liệu Mẫu</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">Khôi phục mẫu BK</span>
-                  </div>
-                </button>
+                </div>
               </div>
 
-              {/* Student Cohort Footer in Sheet */}
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px]">
-                <span className="text-slate-500 font-mono">SINH VIÊN:</span>
-                <span className="font-bold text-slate-900 dark:text-white font-mono">
-                  {studentInfo.name || 'Bách Khoa'} • {studentInfo.major || 'ET-E4'} ({studentInfo.cohort || 'K66'})
-                </span>
+              {/* SECTION 2: ĐỒNG BỘ DỮ LIỆU SIÊU TỐC (Mobile-First) */}
+              <div>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
+                    Đồng Bộ Dữ Liệu
+                  </span>
+                  <span className="text-[9px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded-full">
+                    Không cần F12
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  {onOpenCourseCatalogModal && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOpenCourseCatalogModal();
+                        setMobileMoreOpen(false);
+                      }}
+                      className="p-3 rounded-2xl border border-amber-200/80 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97] hover:border-amber-400"
+                    >
+                      <div className="p-2 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex-shrink-0">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold block text-slate-900 dark:text-white">Kho Môn & Tiên Quyết</span>
+                        <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold">1-Chạm Đồng Bộ Ngành</span>
+                      </div>
+                    </button>
+                  )}
+
+                  {onOpenSisModal && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOpenSisModal();
+                        setMobileMoreOpen(false);
+                      }}
+                      className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97]"
+                    >
+                      <div className="p-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex-shrink-0">
+                        <Upload className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold block text-slate-900 dark:text-white">Nhập SIS Nhanh</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">Dán bảng điểm / TKB</span>
+                      </div>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* SECTION 3: CÀI ĐẶT & HỆ THỐNG */}
+              <div>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider font-mono">
+                    Hệ Thống & Tùy Chọn
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenSettings();
+                      setMobileMoreOpen(false);
+                    }}
+                    className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97]"
+                  >
+                    <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex-shrink-0">
+                      <Settings className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Cài Đặt Hệ Thống</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Thang 4-10, tài khoản</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onResetSampleData();
+                      setMobileMoreOpen(false);
+                    }}
+                    className="p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 text-left flex items-start gap-2.5 text-slate-700 dark:text-slate-300 transition-all active:scale-[0.97]"
+                  >
+                    <div className="p-2 rounded-xl bg-slate-500/10 text-slate-600 dark:text-slate-400 flex-shrink-0">
+                      <RotateCcw className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold block text-slate-900 dark:text-white">Dữ Liệu Mẫu</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Khôi phục mẫu BK</span>
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
