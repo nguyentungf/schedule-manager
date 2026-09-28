@@ -5,51 +5,58 @@ interface HeroBannerProps {
   studentName: string;
   studentId: string;
   majorName: string;
+  onHide?: () => void;
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   studentName,
   studentId,
-  majorName
+  majorName,
+  onHide
 }) => {
   const today = new Date();
   const dateFormatted = today.toLocaleDateString('vi-VN', {
     weekday: 'long',
-    year: 'numeric',
-    month: 'long',
+    month: 'numeric',
     day: 'numeric'
   });
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-r from-[#dc2626] via-[#b91c1c] to-[#991b1b] p-6 sm:p-8 text-white shadow-xl shadow-red-950/15">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#dc2626] via-[#b91c1c] to-[#991b1b] p-5 sm:p-6 text-white shadow-lg shadow-red-950/15">
       {/* Decorative Subtle Background Accents */}
       <div className="absolute -right-12 -top-12 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
       <div className="absolute right-40 -bottom-10 w-48 h-48 rounded-full bg-red-400/20 blur-xl pointer-events-none" />
 
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        {/* Left Text Content */}
-        <div className="space-y-3 max-w-xl">
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        {/* Left Content */}
+        <div className="space-y-2 max-w-xl">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/20 backdrop-blur-md text-[11px] font-semibold text-white border border-white/20">
-              <Calendar className="w-3.5 h-3.5 text-red-200" />
-              <span>{dateFormatted} • Tuần 3 (Kỳ 2024.1)</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-black/20 backdrop-blur-md text-[11px] font-semibold text-white border border-white/20">
+              <Calendar className="w-3 h-3 text-red-200" />
+              <span>{dateFormatted}</span>
             </span>
+            {onHide && (
+              <button
+                type="button"
+                onClick={onHide}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-[10px] font-medium text-white/90 border border-white/15 transition-colors"
+                title="Ẩn thẻ lời chào khỏi Dashboard"
+              >
+                <span>Ẩn lời chào</span>
+              </button>
+            )}
           </div>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-white">
-            Welcome back, {studentName || 'Bách Khoa'}!
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+            {studentName ? `Xin chào, ${studentName}` : 'Xin chào Sinh Viên Bách Khoa!'}
           </h2>
 
-          <p className="text-xs sm:text-sm text-red-100 font-medium leading-relaxed">
-            Luôn chủ động cập nhật thời khóa biểu, mục tiêu CPA và quan hệ học phần tiên quyết tại Cổng thông tin học tập thông minh ĐHBK Hà Nội.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-            <span className="px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-md font-mono font-bold text-white border border-white/30">
-              MSSV: {studentId || '20210000'}
+          <div className="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+            <span className="px-2.5 py-0.5 rounded-lg bg-white/20 backdrop-blur-md font-mono font-bold text-white border border-white/30">
+              {studentId || 'K68'}
             </span>
-            <span className="px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-md font-semibold text-white border border-white/30 truncate max-w-xs">
-              {majorName || 'Kỹ thuật Điện tử - Viễn thông'}
+            <span className="px-2.5 py-0.5 rounded-lg bg-white/20 backdrop-blur-md font-semibold text-white border border-white/30 truncate max-w-xs">
+              {majorName || 'Đại học Bách Khoa Hà Nội'}
             </span>
           </div>
         </div>

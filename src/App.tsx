@@ -3,13 +3,14 @@ import { useDashboardState } from './hooks/useDashboardState';
 import { DashboardTab } from './types/state';
 import { Deadline } from './types/deadline';
 import { Course } from './types/course';
-import { ScheduleItem } from './types/schedule';
-import { getCurriculum } from './data/curricula';
+import { getCurriculum, AVAILABLE_MAJORS } from './data/curricula';
 
-// Layout & Dashboard Components
+// Layout & Dashboard Reference UI Components
 import { AppShell } from './components/layout/AppShell';
-import { SideNavDrawer } from './components/layout/SideNavDrawer';
-import { SortableDashboardGrid } from './components/dashboard/SortableDashboardGrid';
+import { HeroBanner } from './components/dashboard/HeroBanner';
+import { AcademicKpiSection } from './components/dashboard/AcademicKpiSection';
+import { EnrolledCoursesSection } from './components/dashboard/EnrolledCoursesSection';
+import { InstructorsAndNotices } from './components/dashboard/InstructorsAndNotices';
 
 // Feature Components
 import { ScheduleManager } from './components/schedule/ScheduleManager';
@@ -18,13 +19,14 @@ import { ExamPredictor } from './components/grade-calculator/ExamPredictor';
 import { CpaTargetTracker } from './components/grade-calculator/CpaTargetTracker';
 import { GradeScaleTable } from './components/grade-calculator/GradeScaleTable';
 import { StudyPlannerView } from './components/planner/StudyPlannerView';
-import { RawTextImportModal } from './components/sis/RawTextImportModal';
+import { SisPasteModal } from './components/sis/SisPasteModal';
+import { CourseCatalogModal } from './components/curriculum/CourseCatalogModal';
+import { BookmarkletGuide } from './components/sis/BookmarkletGuide';
 import { BackupRestore } from './components/sis/BackupRestore';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { DeadlineModal } from './components/dashboard/DeadlineModal';
 import { CourseDetailModal } from './components/curriculum/CourseDetailModal';
-import { Settings, ClipboardPaste, Sparkles, ShieldCheck } from 'lucide-react';
-import { ParsedCourseResult, ParsedStudentInfo } from './engines/sisParser';
+import { Settings } from 'lucide-react';
 
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
@@ -53,8 +55,7 @@ export const App: React.FC = () => {
     importFullState,
     mergeSisCourses,
     toggleEnglishExemption,
-    updateEnglishExemptions,
-    updateDashboardCardOrder,
+    mergeCourseCatalog,
     importCoursesFromExcel,
     importScheduleFromExcel,
     purgeAllData
@@ -63,9 +64,8 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('dashboard');
   const [isDeadlineModalOpen, setIsDeadlineModalOpen] = useState(false);
   const [editingDeadline, setEditingDeadline] = useState<Deadline | null>(null);
-  const [isRawTextModalOpen, setIsRawTextModalOpen] = useState(false);
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
-  const [isArrangeMode, setIsArrangeMode] = useState(false);
+  const [isSisModalOpen, setIsSisModalOpen] = useState(false);
+  const [isCourseCatalogModalOpen, setIsCourseCatalogModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [detailModalCourse, setDetailModalCourse] = useState<Course | null>(null);
 
@@ -84,16 +84,14 @@ export const App: React.FC = () => {
       CapApp.addListener('backButton', () => {
         if (detailModalCourse) {
           setDetailModalCourse(null);
-        } else if (isSideNavOpen) {
-          setIsSideNavOpen(false);
-        } else if (isRawTextModalOpen) {
-          setIsRawTextModalOpen(false);
         } else if (isDeadlineModalOpen) {
           setIsDeadlineModalOpen(false);
+        } else if (isSisModalOpen) {
+          setIsSisModalOpen(false);
+        } else if (isCourseCatalogModalOpen) {
+          setIsCourseCatalogModalOpen(false);
         } else if (isSettingsModalOpen) {
           setIsSettingsModalOpen(false);
-        } else if (isArrangeMode) {
-          setIsArrangeMode(false);
         } else if (activeTab !== 'dashboard') {
           setActiveTab('dashboard');
         } else {
@@ -113,15 +111,14 @@ export const App: React.FC = () => {
     };
   }, [
     detailModalCourse,
-    isSideNavOpen,
-    isRawTextModalOpen,
     isDeadlineModalOpen,
+    isSisModalOpen,
+    isCourseCatalogModalOpen,
     isSettingsModalOpen,
-    isArrangeMode,
     activeTab
   ]);
 
-  // Đồng bộ class .theme-light, .auto-contrast và [data-theme] trên thẻ <html>
+  // Đồng bộ class .theme-light và .auto-contrast trên thẻ <html> để toàn bộ giao diện đổi màu chuẩn xác
   useEffect(() => {
     const root = document.documentElement;
     if (state.settings.theme === 'light') {
@@ -132,18 +129,24 @@ export const App: React.FC = () => {
       root.classList.add('dark');
     }
 
-    // Thiết lập palette màu chủ đề (Crimson HUST, Ocean, Emerald, Amethyst, Amber, OLED)
-    const palette = state.settings.themePalette || 'crimson';
-    root.setAttribute('data-theme', palette);
-
-    // Tính năng tự động tương phản màu nền WCAG AAA là bắt buộc trên toàn hệ thống
-    root.classList.add('auto-contrast');
-  }, [state.settings.theme, state.settings.themePalette]);
+    // Tự động tương phản màu nền WCAG AAA trên toàn bộ content
+    if (state.settings.autoContrast !== false) {
+      root.classList.add('auto-contrast');
+    } else {
+      root.classList.remove('auto-contrast');
+    }
+  }, [state.settings.theme, state.settings.autoContrast]);
 
   // Nút chuyển đổi nhanh Sáng / Tối
   const handleToggleTheme = () => {
     const nextTheme = state.settings.theme === 'light' ? 'dark' : 'light';
     updateSettings({ theme: nextTheme });
+  };
+
+  // Nút chuyển đổi nhanh Tự động tương phản
+  const handleToggleAutoContrast = () => {
+    const nextAutoContrast = state.settings.autoContrast === false;
+    updateSettings({ autoContrast: nextAutoContrast });
   };
 
   // Số deadline khẩn cấp (< 24h)
@@ -177,56 +180,57 @@ export const App: React.FC = () => {
     changeMajor(majorCode);
   };
 
-  // Callback nhập văn bản thô (Ctrl+A từ trang web)
-  const handleImportCoursesFromRaw = (courses: ParsedCourseResult[], studentInfo?: ParsedStudentInfo) => {
-    if (studentInfo) {
-      updateStudentInfo({
-        name: studentInfo.name || state.studentInfo.name,
-        studentId: studentInfo.studentId || state.studentInfo.studentId,
-        major: studentInfo.major || state.studentInfo.major,
-        majorName: studentInfo.majorName || state.studentInfo.majorName,
-        classCode: studentInfo.classCode || state.studentInfo.classCode,
-        cohort: studentInfo.cohort || state.studentInfo.cohort,
-      });
-    }
-    mergeSisCourses(courses);
-  };
-
-  const handleImportScheduleFromRaw = (items: ScheduleItem[]) => {
-    importScheduleItems(items);
-  };
-
   return (
     <AppShell
       activeTab={activeTab}
       onSelectTab={setActiveTab}
       studentInfo={state.studentInfo}
       theme={state.settings.theme}
+      onToggleTheme={handleToggleTheme}
+      autoContrast={state.settings.autoContrast !== false}
+      onToggleAutoContrast={handleToggleAutoContrast}
       urgentDeadlineCount={urgentDeadlineCount}
       onOpenSettings={() => setIsSettingsModalOpen(true)}
-      onResetSampleData={purgeAllData}
-      onOpenRawTextModal={() => setIsRawTextModalOpen(true)}
-      onOpenSideNav={() => setIsSideNavOpen(true)}
+      onResetSampleData={resetToSampleData}
+      onOpenSisModal={() => setIsSisModalOpen(true)}
+      onOpenCourseCatalogModal={() => setIsCourseCatalogModalOpen(true)}
     >
-      {/* TAB 1: Tổng Quan & Dashboard Với Tính Năng Kéo Thả Thẻ */}
+      {/* TAB 1: Tổng Quan & Dashboard Theo Giao Diện Chuẩn Ảnh Mẫu */}
       {activeTab === 'dashboard' && (
-        <div className="animate-in fade-in duration-200">
-          <SortableDashboardGrid
-            cardOrder={state.settings.dashboardCardOrder}
-            onUpdateCardOrder={updateDashboardCardOrder}
-            isArrangeMode={isArrangeMode}
-            onExitArrangeMode={() => setIsArrangeMode(false)}
-            studentInfo={state.studentInfo}
-            courses={state.courses}
-            totalCurriculumCredits={getCurriculum(state.studentInfo.major).totalCredits || 135}
-            deadlines={state.deadlines}
-            schedule={state.schedule}
-            onOpenCourseDetail={(course: Course) => setDetailModalCourse(course)}
-            onNavigateToCurriculum={() => setActiveTab('curriculum')}
-            onToggleDeadlineComplete={toggleDeadlineComplete}
-            onOpenAddDeadline={handleOpenAddDeadline}
-            onEditDeadline={handleEditDeadline}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in duration-200">
+          {/* Main Left/Center Column (lg:col-span-8) */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* HUST Crimson Red Gradient Hero Banner */}
+            <HeroBanner
+              studentName={state.studentInfo.name}
+              studentId={state.studentInfo.studentId}
+              majorName={state.studentInfo.majorName}
+            />
+
+            {/* 3 KPI Cards: CPA, Completed Credits (with active red outline & progress bar), In-progress & DRL */}
+            <AcademicKpiSection
+              courses={state.courses}
+              totalCurriculumCredits={getCurriculum(state.studentInfo.major).totalCredits || 135}
+            />
+
+            {/* Enrolled Courses Grid with Crisp Cards & "Chi tiết" buttons */}
+            <EnrolledCoursesSection
+              courses={state.courses}
+              onOpenDetail={course => setDetailModalCourse(course)}
+              onNavigateToCurriculum={() => setActiveTab('curriculum')}
+            />
+          </div>
+
+          {/* Right Column (lg:col-span-4): Instructors + Daily Notice / Deadlines */}
+          <div className="lg:col-span-4 space-y-6">
+            <InstructorsAndNotices
+              deadlines={state.deadlines}
+              schedule={state.schedule}
+              onToggleComplete={toggleDeadlineComplete}
+              onOpenAddDeadline={handleOpenAddDeadline}
+              onEditDeadline={handleEditDeadline}
+            />
+          </div>
         </div>
       )}
 
@@ -283,69 +287,51 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 6: Cổng Dữ Liệu SIS HUST - Tự Động Nhận Diện Dữ Liệu Từ Văn Bản Thô */}
+      {/* TAB 6: Cổng Dữ Liệu SIS HUST */}
       {activeTab === 'sis' && (
         <div className="space-y-6 animate-in fade-in duration-200">
-          {/* Main Hero Card for Raw Text Auto-Detector */}
-          <div className="bg-gradient-to-br from-red-600/10 via-slate-900/60 to-slate-900/90 border border-red-500/30 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white flex items-center justify-center shadow-lg shadow-red-900/30 shrink-0">
-                  <ClipboardPaste className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>Tự Động Nhận Diện Dữ Liệu Từ Văn Bản Thô</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-600/20 text-red-600 dark:text-red-400 font-bold border border-red-500/30">
-                      Ctrl + A
-                    </span>
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Hỗ trợ 100% điện thoại di động & máy tính. Không cần F12, không cần bookmarklet!
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-[#131b2e] border border-slate-200/80 dark:border-slate-700/70 rounded-3xl p-5 shadow-sm flex flex-col justify-between gap-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                  1. Nhập Bảng Điểm & CTĐT Từ QLĐT / SIS HUST
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Dán nội dung bảng CTĐT từ qldt.hust.edu.vn hoặc sis.hust.edu.vn (hỗ trợ lọc môn Thể chất, Kỹ sư, Bổ trợ 9TC).
+                </p>
               </div>
-
               <button
-                onClick={() => setIsRawTextModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold shadow-lg shadow-red-600/25 transition-all flex items-center gap-2 shrink-0 active:scale-95"
+                onClick={() => setIsSisModalOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-colors w-full sm:w-auto self-start"
               >
-                <ClipboardPaste className="w-4 h-4" />
-                <span>Mở Trình Nhận Diện Dữ Liệu</span>
+                Mở Nhập CTĐT & Bảng Điểm
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs text-slate-600 dark:text-slate-300">
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
-                <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-semibold block text-slate-900 dark:text-white">Bước 1: Bôi đen toàn bộ</span>
-                  <span className="text-[11px] text-slate-400">Vào trang SIS / QLĐT / CTT, ấn Ctrl + A (hoặc Chọn tất cả trên điện thoại) và Copy.</span>
-                </div>
+            <div className="bg-white dark:bg-[#131b2e] border border-amber-500/30 rounded-3xl p-5 shadow-sm flex flex-col justify-between gap-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                  <span>2. Cào & Ghép HP Điều Kiện (CourseLists)</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">MỚI</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Cào dữ liệu từ https://ctt-sis.hust.edu.vn/pub/CourseLists.aspx để cập nhật chính xác môn tiên quyết, học trước, học phí và trọng số.
+                </p>
               </div>
-
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-semibold block text-slate-900 dark:text-white">Bước 2: Dán vào ứng dụng</span>
-                  <span className="text-[11px] text-slate-400">Bấm nút "Dán từ bộ nhớ tạm". Bộ lọc AI tự động dọn sạch 100% rác HTML.</span>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex items-start gap-2.5">
-                <ClipboardPaste className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-semibold block text-slate-900 dark:text-white">Bước 3: Nhận toàn bộ dữ liệu</span>
-                  <span className="text-[11px] text-slate-400">Tự động điền thông tin sinh viên, bảng điểm, và thời khóa biểu trong 1 giây.</span>
-                </div>
-              </div>
+              <button
+                onClick={() => setIsCourseCatalogModalOpen(true)}
+                className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md shadow-amber-950/40 transition-colors w-full sm:w-auto self-start"
+              >
+                Mở Trình Cào HP Tiên Quyết
+              </button>
             </div>
           </div>
 
+          <BookmarkletGuide />
           <BackupRestore
             state={state}
             onImportState={importFullState}
-            onResetSampleData={purgeAllData}
+            onResetSampleData={resetToSampleData}
           />
         </div>
       )}
@@ -358,7 +344,7 @@ export const App: React.FC = () => {
           </div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">Cài Đặt Hệ Thống & Tài Khoản</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-            Tùy biến tài khoản sinh viên, chuyên ngành đào tạo, thang điểm 4 - 10 và 6 bộ giao diện đa dạng chuẩn Impeccable.
+            Tùy biến tài khoản sinh viên, chuyên ngành đào tạo, thang điểm 4 - 10 và chế độ giao diện.
           </p>
           <button
             onClick={() => setIsSettingsModalOpen(true)}
@@ -369,36 +355,7 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Modals & Drawers */}
-      <SideNavDrawer
-        isOpen={isSideNavOpen}
-        onClose={() => setIsSideNavOpen(false)}
-        studentInfo={state.studentInfo}
-        theme={state.settings.theme}
-        themePalette={state.settings.themePalette || 'crimson'}
-        onToggleTheme={handleToggleTheme}
-        onSelectPalette={(palette: string) => updateSettings({ themePalette: palette as any })}
-        onOpenSettings={() => {
-          setIsSideNavOpen(false);
-          setIsSettingsModalOpen(true);
-        }}
-        onResetSampleData={purgeAllData}
-        isArrangeMode={isArrangeMode}
-        onToggleArrangeMode={() => {
-          setIsSideNavOpen(false);
-          setIsArrangeMode(!isArrangeMode);
-          if (activeTab !== 'dashboard') setActiveTab('dashboard');
-        }}
-        onResetCardOrder={() => updateDashboardCardOrder(['hero', 'kpi', 'courses', 'deadlines'])}
-      />
-
-      <RawTextImportModal
-        isOpen={isRawTextModalOpen}
-        onClose={() => setIsRawTextModalOpen(false)}
-        onImportCourses={handleImportCoursesFromRaw}
-        onImportSchedule={handleImportScheduleFromRaw}
-      />
-
+      {/* Modals */}
       <DeadlineModal
         isOpen={isDeadlineModalOpen}
         onClose={() => setIsDeadlineModalOpen(false)}
@@ -407,19 +364,30 @@ export const App: React.FC = () => {
         courses={state.courses}
       />
 
+      <SisPasteModal
+        isOpen={isSisModalOpen}
+        onClose={() => setIsSisModalOpen(false)}
+        onMergeCourses={mergeSisCourses}
+      />
+
+      <CourseCatalogModal
+        isOpen={isCourseCatalogModalOpen}
+        onClose={() => setIsCourseCatalogModalOpen(false)}
+        onMergeCatalog={mergeCourseCatalog}
+        initialMajorCode={state.studentInfo.major}
+      />
+
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
         studentInfo={state.studentInfo}
         settings={state.settings}
-        allCourses={state.courses}
         onUpdateStudentInfo={updateStudentInfo}
         onUpdateSettings={updateSettings}
         onUpdateGradeScales={updateGradeScales}
         onToggleEnglishExemption={toggleEnglishExemption}
-        onUpdateEnglishExemptions={updateEnglishExemptions}
         onPurgeAllData={purgeAllData}
-        onResetToSampleData={purgeAllData}
+        onResetToSampleData={resetToSampleData}
       />
 
       {detailModalCourse && (

@@ -13,7 +13,9 @@ import {
   ChevronRight,
   GraduationCap,
   Layers,
-  Check
+  Check,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface SideNavDrawerProps {
@@ -29,6 +31,9 @@ interface SideNavDrawerProps {
   isArrangeMode?: boolean;
   onToggleArrangeMode?: () => void;
   onResetCardOrder?: () => void;
+  hiddenCards?: string[];
+  onToggleHideCard?: (cardId: 'hero' | 'kpi' | 'courses' | 'deadlines') => void;
+  onRestoreHiddenCards?: () => void;
 }
 
 const THEME_PALETTES = [
@@ -52,7 +57,10 @@ export const SideNavDrawer: React.FC<SideNavDrawerProps> = ({
   onResetSampleData,
   isArrangeMode = false,
   onToggleArrangeMode,
-  onResetCardOrder
+  onResetCardOrder,
+  hiddenCards = [],
+  onToggleHideCard,
+  onRestoreHiddenCards
 }) => {
   if (!isOpen) return null;
 
@@ -205,13 +213,60 @@ export const SideNavDrawer: React.FC<SideNavDrawerProps> = ({
               </div>
             </div>
 
-            {/* 3. TÍNH NĂNG SẮP XẾP TRẬT TỰ THẺ DASHBOARD */}
+            {/* 3. TÍNH NĂNG SẮP XẾP & ẨN/HIỆN THẺ DASHBOARD */}
             <div className="space-y-3">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
-                <span>Sắp Xếp Dashboard</span>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                  <span>Sắp Xếp & Quản Lý Thẻ</span>
+                </div>
+                {hiddenCards.length > 0 && onRestoreHiddenCards && (
+                  <button
+                    type="button"
+                    onClick={onRestoreHiddenCards}
+                    className="text-[10px] text-red-600 dark:text-red-400 font-semibold hover:underline"
+                  >
+                    Hiện lại tất cả ({hiddenCards.length})
+                  </button>
+                )}
               </div>
 
+              {/* Ẩn / Hiện Thẻ Lời Chào (Hero Banner) theo yêu cầu người dùng */}
+              {onToggleHideCard && (
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400">
+                      {hiddenCards.includes('hero') ? (
+                        <EyeOff className="w-4 h-4 text-slate-400" />
+                      ) : (
+                        <Eye className="w-4 h-4 text-red-600" />
+                      )}
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                        Thẻ Lời Chào Dashboard
+                      </span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                        {hiddenCards.includes('hero') ? 'Đang ẩn thẻ lời chào' : 'Đang hiển thị trên Dashboard'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onToggleHideCard('hero')}
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
+                      hiddenCards.includes('hero')
+                        ? 'bg-red-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-red-600'
+                    }`}
+                  >
+                    {hiddenCards.includes('hero') ? 'Hiện thẻ' : 'Ẩn thẻ'}
+                  </button>
+                </div>
+              )}
+
+              {/* Bật / Tắt Chế Độ Kéo Thả Sắp Xếp */}
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

@@ -400,3 +400,39 @@ export async function downloadScheduleExcelTemplate(): Promise<void> {
   XLSX.utils.book_append_sheet(wb, ws, 'Thoi Khoa Bieu');
   XLSX.writeFile(wb, 'Mau_Thoi_Khoa_Bieu_HUST.xlsx');
 }
+
+/**
+ * Xuất Thời Khóa Biểu đã chọn ra file Excel theo đúng định dạng yêu cầu của sinh viên:
+ * Mã lớp, Tên học phần, Mã học phần, Tiết học, Tuần học, Phòng học/Lớp học
+ */
+export async function exportScheduleToExcel(items: ScheduleItem[], filename = 'Thoi_Khoa_Bieu_Ky_Toi_HUST.xlsx'): Promise<void> {
+  const XLSX = await getXlsx();
+
+  const exportRows = items.map(item => ({
+    'Mã lớp': item.classCode,
+    'Tên học phần': item.courseName,
+    'Mã học phần': item.courseCode,
+    'Thứ': item.dayOfWeek === 8 ? 'Chủ nhật' : `Thứ ${item.dayOfWeek}`,
+    'Tiết học': `${item.startPeriod} - ${item.endPeriod}`,
+    'Tuần học': item.weeks,
+    'Phòng học': item.room,
+    'Giảng viên': item.teacher || 'Đang cập nhật'
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(exportRows);
+  ws['!cols'] = [
+    { wch: 14 }, // Mã lớp
+    { wch: 32 }, // Tên học phần
+    { wch: 14 }, // Mã học phần
+    { wch: 12 }, // Thứ
+    { wch: 14 }, // Tiết học
+    { wch: 22 }, // Tuần học
+    { wch: 16 }, // Phòng học
+    { wch: 24 }  // Giảng viên
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'TKB_HUST');
+  XLSX.writeFile(wb, filename);
+}
+

@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DashboardState, StudentInfo, DashboardSettings, CustomGradeScaleSettings } from '../types/state';
 import { Deadline } from '../types/deadline';
-import { Course, CourseStatus } from '../types/course';
+import { Course } from '../types/course';
 import { ScheduleItem } from '../types/schedule';
 import { getInitialSampleState } from '../data/sampleData';
 import { ParsedCourseResult, ParsedStudentInfo } from '../engines/sisParser';
 import { getCurriculum, AVAILABLE_MAJORS } from '../data/curricula';
 import confetti from 'canvas-confetti';
 
-const STORAGE_KEY = 'HUST_DASHBOARD_DATA_V2';
+const STORAGE_KEY = 'HUST_DASHBOARD_DATA_V1';
 
 export function useDashboardState() {
   const [state, setState] = useState<DashboardState>(() => {
@@ -16,18 +16,13 @@ export function useDashboardState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Nếu là dữ liệu mẫu cũ (Nguyễn Văn Bách), xóa để đảm bảo database sạch sẽ
-        if (parsed.studentInfo?.name === 'Nguyễn Văn Bách' || parsed.studentInfo?.studentId === '20210001') {
-          return getInitialSampleState();
-        }
         // Đảm bảo có mảng schedule và settings hợp lệ
         if (!parsed.schedule) {
           parsed.schedule = [];
         }
         if (!parsed.settings?.gradeScales) {
           parsed.settings = {
-            theme: 'crimson',
-            themePalette: 'crimson',
+            theme: 'dark',
             soundEnabled: true,
             urgentThresholdHours: 24,
             warningThresholdHours: 72,
@@ -41,14 +36,13 @@ export function useDashboardState() {
               minD: 4.0,
               failFinalExamMin: 3.0
             },
-            autoContrast: true,
-            dashboardCardOrder: ['hero', 'kpi', 'courses', 'deadlines']
+            autoContrast: true
           };
         }
         return parsed;
       }
     } catch (e) {
-      console.warn('Không thể đọc dữ liệu từ localStorage, sử dụng dữ liệu sạch ban đầu.', e);
+      console.warn('Không thể đọc dữ liệu từ localStorage, sử dụng dữ liệu mẫu.', e);
     }
     return getInitialSampleState();
   });
@@ -325,12 +319,11 @@ export function useDashboardState() {
       parsedList.forEach(item => {
         const existing = courseMap.get(item.code);
         const isPassed = item.gradeScale4 !== null && item.gradeScale4 > 0;
-        const isFailed = item.gradeLetter === 'F' || (item.gradeScale4 !== null && item.gradeScale4 === 0);
-        const status: CourseStatus = isPassed
+        const status = isPassed
           ? 'passed'
-          : (isFailed
+          : (item.gradeLetter === 'F'
             ? 'failed'
-            : (item.status === 'in_progress' ? 'in_progress' : (existing?.status ?? (item.creditsTaken ? 'in_progress' : 'planned'))));
+            : (existing?.status ?? (item.creditsTaken ? 'in_progress' : 'planned')));
 
         if (existing) {
           const validName = (item.name && !item.name.startsWith('Học phần ')) ? item.name : existing.name;
@@ -345,7 +338,7 @@ export function useDashboardState() {
             creditsTaken: item.creditsTaken ?? existing.creditsTaken,
             codeTaken: item.codeTaken || existing.codeTaken,
             ects: item.ects ?? existing.ects,
-            isLearned: item.isLearned ?? (isPassed || isFailed),
+            isLearned: item.isLearned ?? existing.isLearned,
             prerequisites: (item.prerequisites && item.prerequisites.length > 0) ? item.prerequisites : existing.prerequisites,
             isModuleCourse: item.isModuleCourse ?? existing.isModuleCourse,
             isEnglishCourse: item.isEnglishCourse ?? existing.isEnglishCourse,
@@ -355,8 +348,8 @@ export function useDashboardState() {
             englishName: item.englishName || existing.englishName,
             gradeQt: item.gradeQt ?? existing.gradeQt,
             gradeCk: item.gradeCk ?? existing.gradeCk,
-            gradeLetter: item.gradeLetter !== undefined ? item.gradeLetter : existing.gradeLetter,
-            gradeScale4: item.gradeScale4 !== undefined ? item.gradeScale4 : existing.gradeScale4,
+            gradeLetter: item.gradeLetter ?? existing.gradeLetter,
+            gradeScale4: item.gradeScale4 ?? existing.gradeScale4,
             status
           });
         } else {
@@ -433,59 +426,6 @@ export function useDashboardState() {
         lastUpdated: new Date().toISOString()
       };
     });
-  }, []);
-
-  // Miễn từng học phần tiếng Anh cụ thể theo chứng chỉ ngoại ngữ (IELTS, TOEIC...)
-  const updateEnglishExemptions = useCallback((exemptCodes: string[]) => {
-    setState(prev => {
-      const codeSet = new Set(exemptCodes.map(c => c.toUpperCase().trim()));
-      const updatedCourses = prev.courses.map(c => {
-        const isTarget = codeSet.has(c.code.toUpperCase().trim());
-        const isEng = c.isEnglishCourse || c.code.startsWith('FL') || /tiếng anh|ngoại ngữ|english/i.test(c.name);
-        if (isTarget) {
-          return {
-            ...c,
-            isEnglishCourse: true,
-            status: !c.isLearned ? ('passed' as const) : c.status,
-            isRequired: false
-          };
-        } else if (isEng && !c.isLearned && !c.gradeScale4) {
-          return {
-            ...c,
-            isRequired: true,
-            status: c.status === 'passed' ? ('planned' as const) : c.status
-          };
-        }
-        return c;
-      });
-
-      return {
-        ...prev,
-        studentInfo: {
-          ...prev.studentInfo,
-          exemptEnglishCourses: exemptCodes,
-          exemptEnglish: exemptCodes.length > 0
-        },
-        settings: {
-          ...prev.settings,
-          exemptEnglish: exemptCodes.length > 0
-        },
-        courses: updatedCourses,
-        lastUpdated: new Date().toISOString()
-      };
-    });
-  }, []);
-
-  // Cập nhật thứ tự sắp xếp các thẻ kéo thả trên Dashboard
-  const updateDashboardCardOrder = useCallback((order: string[]) => {
-    setState(prev => ({
-      ...prev,
-      settings: {
-        ...prev.settings,
-        dashboardCardOrder: order
-      },
-      lastUpdated: new Date().toISOString()
-    }));
   }, []);
 
   const mergeCourseCatalog = useCallback((catalogList: Array<{
@@ -646,6 +586,67 @@ export function useDashboardState() {
     setState(cleanState);
   }, []);
 
+  const updateDashboardCardOrder = useCallback((newOrder: string[]) => {
+    setState(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        dashboardCardOrder: newOrder
+      },
+      lastUpdated: new Date().toISOString()
+    }));
+  }, []);
+
+  const toggleHideDashboardCard = useCallback((cardId: string) => {
+    setState(prev => {
+      const currentHidden = prev.settings.dashboardHiddenCards || [];
+      const isHidden = currentHidden.includes(cardId);
+      const nextHidden = isHidden
+        ? currentHidden.filter(id => id !== cardId)
+        : [...currentHidden, cardId];
+
+      return {
+        ...prev,
+        settings: {
+          ...prev.settings,
+          dashboardHiddenCards: nextHidden
+        },
+        lastUpdated: new Date().toISOString()
+      };
+    });
+  }, []);
+
+  const restoreAllDashboardCards = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        dashboardHiddenCards: []
+      },
+      lastUpdated: new Date().toISOString()
+    }));
+  }, []);
+
+  const updateEnglishExemptions = useCallback((courses: string[]) => {
+    setState(prev => ({
+      ...prev,
+      studentInfo: {
+        ...prev.studentInfo,
+        exemptEnglishCourses: courses,
+        exemptEnglish: courses.length > 0
+      },
+      lastUpdated: new Date().toISOString()
+    }));
+  }, []);
+
+  const applyGeneratedSchedule = useCallback((items: ScheduleItem[], overwrite = true) => {
+    setState(prev => ({
+      ...prev,
+      schedule: overwrite ? items : [...prev.schedule, ...items],
+      lastUpdated: new Date().toISOString()
+    }));
+  }, []);
+
   return {
     state,
     addDeadline,
@@ -670,10 +671,13 @@ export function useDashboardState() {
     mergeSisCourses,
     toggleEnglishExemption,
     updateEnglishExemptions,
-    updateDashboardCardOrder,
     mergeCourseCatalog,
     importCoursesFromExcel,
     importScheduleFromExcel,
-    purgeAllData
+    purgeAllData,
+    updateDashboardCardOrder,
+    toggleHideDashboardCard,
+    restoreAllDashboardCards,
+    applyGeneratedSchedule
   };
 }

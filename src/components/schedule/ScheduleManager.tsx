@@ -5,7 +5,7 @@ import { ScheduleListView } from './ScheduleListView';
 import { ScheduleItemModal } from './ScheduleItemModal';
 import { ScheduleImportModal } from './ScheduleImportModal';
 import { ExcelUploadModal } from '../common/ExcelUploadModal';
-import { Calendar, List, Plus, Upload, FileSpreadsheet } from 'lucide-react';
+import { Calendar, List, Plus, Upload, FileSpreadsheet, Sparkles } from 'lucide-react';
 
 interface ScheduleManagerProps {
   schedule: ScheduleItem[];
@@ -14,6 +14,7 @@ interface ScheduleManagerProps {
   onDeleteScheduleItem: (id: string) => void;
   onImportScheduleItems: (items: ScheduleItem[]) => void;
   onImportScheduleFromExcel?: (schedule: ScheduleItem[], overwrite: boolean) => void;
+  onOpenOptimizer?: () => void;
 }
 
 export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
@@ -22,7 +23,8 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
   onUpdateScheduleItem,
   onDeleteScheduleItem,
   onImportScheduleItems,
-  onImportScheduleFromExcel
+  onImportScheduleFromExcel,
+  onOpenOptimizer
 }) => {
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
@@ -96,7 +98,18 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
+          {onOpenOptimizer && (
+            <button
+              onClick={onOpenOptimizer}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-bold shadow-md shadow-red-600/25 transition-all active:scale-[0.98]"
+              title="Tự động xếp TKB không trùng tiết, gợi ý chiến thuật nghỉ ngơi & học máy môn học kỳ tới"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
+              <span>⚡ Soạn TKB Tự Động & Gợi Ý AI</span>
+            </button>
+          )}
+
           {onImportScheduleFromExcel && (
             <button
               onClick={() => setIsExcelModalOpen(true)}
@@ -104,7 +117,7 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
               title="Nhập thời khóa biểu từ file Excel (.xlsx, .xls, .csv) hoặc tải file mẫu"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
-              <span>Nhập Excel / Tải mẫu</span>
+              <span>Nhập Excel</span>
             </button>
           )}
           <button
@@ -112,14 +125,14 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-600/20 hover:bg-blue-100 dark:hover:bg-blue-600/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 text-xs font-semibold transition-colors"
           >
             <Upload className="w-3.5 h-3.5" />
-            <span>Nhập TKB SIS</span>
+            <span>Nhập SIS</span>
           </button>
           <button
             onClick={handleOpenAdd}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition-all active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
-            <span>Thêm Lớp Mới</span>
+            <span>Thêm Lớp</span>
           </button>
         </div>
       </div>

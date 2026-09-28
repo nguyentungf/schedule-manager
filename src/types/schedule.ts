@@ -47,3 +47,35 @@ export interface ScheduleConflict {
   overlapPeriods: number[];
   message: string;
 }
+
+export type ScheduleStrategyType = 'balanced' | 'morning' | 'afternoon' | 'compact';
+
+export interface ScheduleClassOption {
+  classCode: string;
+  courseCode: string;
+  courseName: string;
+  dayOfWeek: number;
+  startPeriod: number;
+  endPeriod: number;
+  room: string;
+  weeks: string;
+  teacher?: string;
+  type?: ScheduleItemType;
+  credits?: number;
+}
+
+export interface GeneratedSchedulePlan {
+  id: string;
+  name: string;
+  strategy: ScheduleStrategyType;
+  items: ScheduleItem[];
+  totalCredits: number;
+  courseCount: number;
+  studyDaysCount: number;
+  morningPeriodsCount: number;
+  afternoonPeriodsCount: number;
+  restScore: number;
+  hasLunchBreak: boolean;
+  maxContinuousPeriods: number;
+  description: string;
+}

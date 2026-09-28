@@ -54,3 +54,4 @@ export interface DashboardState {
   settings: DashboardSettings;
   lastUpdated: string;
 }
+
