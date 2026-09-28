@@ -1,0 +1,464 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#090d16] text-slate-100 font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* =========================================================
+   UNIVERSAL BUTTON INTERACTION ANIMATION & TONE
+   Hover: darken 1 tone (brightness 0.92) & shrink 2% (scale 0.98)
+   Click / Active: bounce 3% (scale 0.95 with spring physics)
+   ========================================================= */
+button,
+[role="button"] {
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.16s ease,
+              background-color 0.16s ease,
+              border-color 0.16s ease,
+              box-shadow 0.16s ease;
+  transform-origin: center center;
+}
+
+button:hover:not(:disabled),
+[role="button"]:hover:not(:disabled) {
+  filter: brightness(0.92);
+  transform: scale(0.98);
+}
+
+button:active:not(:disabled),
+[role="button"]:active:not(:disabled) {
+  filter: brightness(0.85);
+  transform: scale(0.95);
+  transition-duration: 0.08s;
+}
+
+/* =========================================================
+   IMPECCABLE LIGHT THEME SYSTEM (GIAO DIỆN SÁNG CHUẨN MỰC WCAG AAA)
+   Tone-on-tone gradient từ màu sáng sang màu tối cùng tone
+   Xóa bỏ hoàn toàn gradient kim loại / zinc chrome
+   ========================================================= */
+html.theme-light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.theme-light .bg-\[\#090d16\],
+html.theme-light .bg-black,
+html.theme-light .bg-\[\#150a0f\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Header in Light Mode */
+html.theme-light header {
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  background-color: #ffffff !important;
+  border-bottom-color: #e2e8f0 !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Sidebar & Sidebar Navigation: ALWAYS Crimson Red with pristine white text & icons */
+aside,
+html.theme-light aside {
+  background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%) !important;
+  color: #ffffff !important;
+}
+
+aside nav,
+html.theme-light aside nav,
+html.auto-contrast aside nav {
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+aside nav button:not(.bg-white),
+html.theme-light aside nav button:not(.bg-white) {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+aside nav button:not(.bg-white):hover,
+html.theme-light aside nav button:not(.bg-white):hover {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+aside nav button.bg-white,
+html.theme-light aside nav button.bg-white {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #b91c1c !important;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.22) !important;
+}
+
+aside nav button.bg-white span,
+aside nav button.bg-white svg,
+html.theme-light aside nav button.bg-white span,
+html.theme-light aside nav button.bg-white svg {
+  color: #b91c1c !important;
+}
+
+/* Horizontal / Tab navigation outside aside in Light Mode */
+html.theme-light nav:not(aside nav) {
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+html.theme-light footer {
+  background-image: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  background-color: #ffffff !important;
+  border-top-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+/* Cards & Bento Grid in Light Mode - Gradient đổ từ màu sáng sang màu tối cùng tone */
+html.theme-light .bg-\[\#0f172a\],
+html.theme-light .bg-\[\#0f172a\]\/70,
+html.theme-light .bg-\[\#0f172a\]\/90,
+html.theme-light .bg-\[\#0f172a\]\/95,
+html.theme-light .bg-\[\#131b2e\],
+html.theme-light .bg-\[\#131b2e\]\/90,
+html.theme-light .bg-slate-900,
+html.theme-light .bg-slate-900\/60,
+html.theme-light .bg-slate-900\/70,
+html.theme-light .bg-slate-900\/80,
+html.theme-light .bg-slate-900\/90 {
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.theme-light .bg-slate-800,
+html.theme-light .bg-slate-800\/80,
+html.theme-light .bg-slate-800\/60,
+html.theme-light .bg-slate-800\/40,
+html.theme-light .bg-\[\#1e293b\] {
+  background-image: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  background-color: #f1f5f9 !important;
+}
+
+/* Xóa bỏ hoàn toàn gradient kim loại / dark slate trong Light Mode */
+html.theme-light [class*="from-slate-900"],
+html.theme-light [class*="to-\[\#1e293b\]"],
+html.theme-light [class*="to-slate-900"],
+html.theme-light [class*="from-blue-950"] {
+  background-image: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%) !important;
+}
+
+/* Tone-on-tone gradient cho Red primary buttons / badges */
+html.theme-light [class*="from-red-600"][class*="to-red-700"],
+html.theme-light [class*="from-red-500"][class*="to-rose-600"] {
+  background-image: linear-gradient(180deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+/* Borders in Light Mode */
+html.theme-light .border-slate-800,
+html.theme-light .border-slate-800\/40,
+html.theme-light .border-slate-800\/60,
+html.theme-light .border-slate-800\/80,
+html.theme-light .border-slate-700,
+html.theme-light .border-slate-700\/60,
+html.theme-light .border-slate-700\/70,
+html.theme-light .border-slate-700\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+/* =========================================================
+   UNIVERSAL AUTOMATIC CONTRAST ENGINE (TƯƠNG PHẢN TỰ ĐỘNG TOÀN BỘ CONTENT)
+   Đảm bảo chuẩn mực WCAG AAA:
+   1. Trên mọi bề mặt sáng (Light Mode):
+      - Tiêu đề, chữ đậm, nhãn tự động chuyển sang màu tối tương phản cao (#0f172a / #1e293b / #334155).
+      - Mọi thẻ văn bản có class .text-white nằm trên card sáng (mà không phải nút màu hay banner)
+        sẽ được tự động đảo màu sang màu tối, triệt tiêu 100% hiện tượng chữ trắng chìm trên nền trắng.
+   2. Bảo toàn tuyệt đối chữ trắng trên các nền màu đặc biệt:
+      - aside (Sidebar đỏ Bách Khoa)
+      - .bg-gradient-to-r.from-[#dc2626] (HeroBanner đỏ)
+      - Các nút chính: .bg-red-600, .bg-emerald-600, .bg-blue-600, .bg-rose-600, .bg-amber-600, .bg-purple-600
+   ========================================================= */
+
+/* Headings tự động tương phản cao trên nền sáng */
+html.theme-light main h1:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]),
+html.theme-light main h2:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]),
+html.theme-light main h3:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]),
+html.theme-light main h4:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]),
+html.theme-light main h5:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]),
+html.theme-light main h6:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="text-red"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-rose"]):not([class*="text-amber"]) {
+  color: #0f172a !important;
+}
+
+/* Đảo màu tự động cho các thẻ text-white trên card/nền sáng */
+html.theme-light :is(.bg-white, .bg-slate-50, .bg-slate-100, .bg-slate-200, .bg-\[\#f8fafc\], .bg-\[\#131b2e\], .bg-slate-900, main, [role="dialog"]) :is(h1, h2, h3, h4, h5, h6, strong, b).text-white:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-amber"]):not([class*="bg-purple"]) {
+  color: #0f172a !important;
+}
+
+html.theme-light :is(.bg-white, .bg-slate-50, .bg-slate-100, .bg-slate-200, .bg-\[\#f8fafc\], .bg-\[\#131b2e\], .bg-slate-900, main, [role="dialog"]) :is(p, span, div, li, td, th).text-white:not(aside *):not(.bg-gradient-to-r.from-\[\#dc2626\] *):not([class*="bg-red"]):not([class*="bg-emerald"]):not([class*="bg-blue"]):not([class*="bg-rose"]):not([class*="bg-amber"]):not([class*="bg-purple"]) {
+  color: #1e293b !important;
+}
+
+/* Bảo toàn tuyệt đối chữ trắng trên Sidebar đỏ & Hero Banner đỏ */
+aside,
+aside *,
+.bg-gradient-to-r.from-\[\#dc2626\],
+.bg-gradient-to-r.from-\[\#dc2626\] * {
+  --tw-text-opacity: 1;
+}
+
+html.theme-light aside .text-white,
+html.theme-light aside .text-white\/85,
+html.theme-light aside .text-white\/90,
+html.theme-light aside .text-white\/95,
+html.theme-light aside span.text-white,
+html.theme-light .bg-gradient-to-r.from-\[\#dc2626\] .text-white,
+html.theme-light .bg-gradient-to-r.from-\[\#dc2626\] h2,
+html.theme-light .bg-gradient-to-r.from-\[\#dc2626\] p,
+html.theme-light .bg-gradient-to-r.from-\[\#dc2626\] span {
+  color: #ffffff !important;
+}
+
+/* Bảo toàn chữ trắng trên các nút màu chính */
+html.theme-light button.bg-red-600,
+html.theme-light button.bg-red-700,
+html.theme-light button.bg-emerald-600,
+html.theme-light button.bg-blue-600,
+html.theme-light button.bg-rose-600,
+html.theme-light .bg-red-600.text-white,
+html.theme-light .bg-emerald-600.text-white,
+html.theme-light .bg-blue-600.text-white,
+html.theme-light .bg-rose-600.text-white {
+  color: #ffffff !important;
+}
+
+html.theme-light button.bg-red-600 *,
+html.theme-light button.bg-red-700 *,
+html.theme-light button.bg-emerald-600 *,
+html.theme-light button.bg-blue-600 *,
+html.theme-light button.bg-rose-600 * {
+  color: #ffffff !important;
+}
+
+/* Typography Contrast in Light Mode:
+   General slate texts are mapped to clean high-contrast dark tones. */
+html.theme-light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html.theme-light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.theme-light .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.theme-light .text-slate-400 {
+  color: #64748b !important;
+}
+
+html.theme-light .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* High Contrast Status Badges (WCAG AAA Compliant) */
+html.theme-light .text-emerald-400,
+html.theme-light .text-emerald-300 {
+  color: #047857 !important;
+}
+
+html.theme-light .text-blue-400,
+html.theme-light .text-blue-300 {
+  color: #1d4ed8 !important;
+}
+
+html.theme-light .text-rose-400,
+html.theme-light .text-rose-300 {
+  color: #be123c !important;
+}
+
+html.theme-light .text-red-400,
+html.theme-light .text-red-300 {
+  color: #b91c1c !important;
+}
+
+html.theme-light .text-amber-400,
+html.theme-light .text-amber-300 {
+  color: #b45309 !important;
+}
+
+html.theme-light .text-purple-400,
+html.theme-light .text-purple-300 {
+  color: #7e22ce !important;
+}
+
+html.theme-light .text-cyan-400,
+html.theme-light .text-cyan-300 {
+  color: #0e7490 !important;
+}
+
+/* Badge Backgrounds in Light Mode - Gradient cùng tone sáng sang tối */
+html.theme-light .bg-emerald-950\/40,
+html.theme-light .bg-emerald-900\/30,
+html.theme-light .bg-emerald-600\/20,
+html.theme-light .bg-emerald-500\/10 {
+  background-image: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%) !important;
+  background-color: #f0fdf4 !important;
+}
+
+html.theme-light .bg-blue-950\/40,
+html.theme-light .bg-blue-900\/30,
+html.theme-light .bg-blue-600\/20,
+html.theme-light .bg-blue-500\/10 {
+  background-image: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  background-color: #f0f9ff !important;
+}
+
+html.theme-light .bg-rose-950\/40,
+html.theme-light .bg-rose-900\/30,
+html.theme-light .bg-rose-600\/20,
+html.theme-light .bg-rose-500\/10 {
+  background-image: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%) !important;
+  background-color: #fff1f2 !important;
+}
+
+html.theme-light .bg-red-950\/40,
+html.theme-light .bg-red-900\/30,
+html.theme-light .bg-red-600\/15,
+html.theme-light .bg-red-600\/20 {
+  background-image: linear-gradient(180deg, #fef2f2 0%, #fee2e2 100%) !important;
+  background-color: #fef2f2 !important;
+}
+
+html.theme-light .bg-amber-950\/40,
+html.theme-light .bg-amber-900\/30,
+html.theme-light .bg-amber-600\/20,
+html.theme-light .bg-amber-500\/20 {
+  background-image: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%) !important;
+  background-color: #fffbeb !important;
+}
+
+html.theme-light .bg-purple-950\/40,
+html.theme-light .bg-purple-900\/30,
+html.theme-light .bg-purple-600\/20 {
+  background-image: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%) !important;
+  background-color: #faf5ff !important;
+}
+
+/* Badge Borders in Light Mode */
+html.theme-light .border-emerald-800\/40,
+html.theme-light .border-emerald-500\/30 {
+  border-color: #a7f3d0 !important;
+}
+
+html.theme-light .border-blue-800\/40,
+html.theme-light .border-blue-500\/30 {
+  border-color: #bfdbfe !important;
+}
+
+html.theme-light .border-rose-800\/40,
+html.theme-light .border-rose-500\/30 {
+  border-color: #fecdd3 !important;
+}
+
+html.theme-light .border-red-800\/40,
+html.theme-light .border-red-500\/30 {
+  border-color: #fecaca !important;
+}
+
+html.theme-light .border-amber-800\/40,
+html.theme-light .border-amber-500\/30 {
+  border-color: #fde68a !important;
+}
+
+html.theme-light .border-purple-800\/40,
+html.theme-light .border-purple-500\/30 {
+  border-color: #e9d5ff !important;
+}
+
+/* Hover States in Light Mode */
+html.theme-light .hover\:bg-slate-800:hover,
+html.theme-light .hover\:bg-slate-700:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.theme-light .hover\:bg-slate-900:hover {
+  background-color: #f1f5f9 !important;
+}
+
+/* Form Inputs & Controls in Light Mode */
+html.theme-light input,
+html.theme-light select,
+html.theme-light textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.theme-light input:focus,
+html.theme-light select:focus,
+html.theme-light textarea:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15) !important;
+}
+
+html.theme-light input::placeholder,
+html.theme-light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Modal styling in Light Mode */
+html.theme-light [role="dialog"],
+html.theme-light .fixed.inset-0 .bg-\[\#131b2e\] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15) !important;
+}
+
+/* Table rows hover state in Light Mode */
+html.theme-light tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+html.theme-light thead {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+/* Scrollbar in Light Mode */
+html.theme-light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.theme-light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.theme-light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

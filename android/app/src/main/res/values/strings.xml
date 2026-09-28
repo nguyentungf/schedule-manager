@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">HUST Portal</string>
+    <string name="title_activity_main">HUST Portal</string>
+    <string name="package_name">vn.edu.hust.student</string>
+    <string name="custom_url_scheme">vn.edu.hust.student</string>
+</resources>

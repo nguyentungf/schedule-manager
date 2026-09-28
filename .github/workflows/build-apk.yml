@@ -1,0 +1,73 @@
+name: Build Android APK (HUST Portal)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Cho phép người dùng bấm nút "Run workflow" bất kỳ lúc nào trên GitHub
+
+jobs:
+  build-apk:
+    name: Build & Package Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Node dependencies
+        run: |
+          npm config set omit ""
+          npm install --include=dev
+
+      - name: 🏗️ Build Vite Web App
+        run: npm run build
+
+      - name: 🔄 Sync Capacitor Android Assets
+        run: npx cap sync android
+
+      - name: ☕ Setup Java JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: 📱 Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 🔑 Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: 🚀 Assemble Android Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: 📤 Upload APK Artifact (Tải về file APK trực tiếp)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HUST-Portal-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - name: 🏷️ Create Release with APK (nếu push Git tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## 📱 Bản cài đặt Android APK (HUST Smart Portal)
+            - Tải tệp `app-debug.apk` đính kèm bên dưới và cài đặt trực tiếp vào điện thoại Android.
+            - Hỗ trợ Android 7.0 (Nougat) đến Android 15+.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
