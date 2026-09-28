@@ -215,7 +215,7 @@ export const DeadlineModal: React.FC<DeadlineModalProps> = ({
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-900/20 transition-colors"
+            className="px-5 py-2 rounded-xl text-xs font-bold bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow-md shadow-zinc-900/20 dark:shadow-none transition-colors"
           >
             {editingDeadline ? 'Lưu Thay Đổi' : 'Tạo Deadline'}
           </button>

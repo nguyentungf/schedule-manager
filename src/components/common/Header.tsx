@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-red-700 flex items-center justify-center shadow-md shadow-red-900/20 border border-red-500/30 flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-red-700 flex items-center justify-center shadow-md shadow-zinc-900/20 dark:shadow-none border border-red-500/30 flex-shrink-0">
             <span className="text-white font-black text-xl tracking-tighter">BK</span>
           </div>
           <div>

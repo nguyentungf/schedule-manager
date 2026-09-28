@@ -35,9 +35,10 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm animate-in fade-in duration-500">
+      <div className="min-h-full flex items-center justify-center p-4">
       <div
-        className={`w-full ${maxWidth} bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-slate-900 dark:text-slate-100 animate-in zoom-in-95 duration-150`}
+        className={`w-full ${maxWidth} bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[100dvh] sm:max-h-[90vh] text-slate-900 dark:text-slate-100 animate-in zoom-in-95 duration-300 relative`}
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -58,6 +59,7 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="p-4 sm:p-6 overflow-y-auto space-y-4 bg-white dark:bg-[#131b2e] text-slate-900 dark:text-slate-100">
           {children}
         </div>
+      </div>
       </div>
     </div>
   );

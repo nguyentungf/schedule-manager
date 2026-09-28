@@ -412,7 +412,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = ({
           </button>
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md transition-all active:scale-[0.98]"
+            className="px-5 py-2 rounded-xl text-xs font-bold bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow-md transition-all active:scale-[0.98]"
           >
             {editingItem ? 'Lưu Thay Đổi' : 'Thêm Vào TKB'}
           </button>

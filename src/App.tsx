@@ -335,7 +335,7 @@ export const App: React.FC = () => {
 
               <button
                 onClick={() => setIsRawTextModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-red-600/25 transition-all flex items-center gap-2 shrink-0 active:scale-95"
+                className="px-4 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs sm:text-sm font-bold shadow-md shadow-red-600/25 transition-all flex items-center gap-2 shrink-0 active:scale-95"
               >
                 <ClipboardPaste className="w-4 h-4" />
                 <span>Mở Trình Dán Dữ Liệu</span>
@@ -389,7 +389,7 @@ export const App: React.FC = () => {
           </p>
           <button
             onClick={() => setIsSettingsModalOpen(true)}
-            className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/25 transition-all"
+            className="px-6 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-sm shadow-md shadow-red-600/25 transition-all"
           >
             Mở Bảng Cài Đặt
           </button>

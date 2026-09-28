@@ -192,7 +192,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             onClick={() => setActiveMode('preset')}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all flex-shrink-0 ${
               activeMode === 'preset'
-                ? 'bg-red-600 text-white shadow-md shadow-red-950/20 font-bold'
+                ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -205,7 +205,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             onClick={() => setActiveMode('search')}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all flex-shrink-0 ${
               activeMode === 'search'
-                ? 'bg-red-600 text-white shadow-md shadow-red-950/20 font-bold'
+                ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -218,7 +218,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             onClick={() => setActiveMode('paste')}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all flex-shrink-0 ${
               activeMode === 'paste'
-                ? 'bg-red-600 text-white shadow-md shadow-red-950/20 font-bold'
+                ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -231,7 +231,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             onClick={() => setActiveMode('f12')}
             className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all flex-shrink-0 ${
               activeMode === 'f12'
-                ? 'bg-red-600 text-white shadow-md shadow-red-950/20 font-bold'
+                ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -244,7 +244,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             TAB 1: 1-CHẠM ĐỒNG BỘ NGÀNH (MOBILE HERO)
            ========================================================= */}
         {activeMode === 'preset' && (
-          <div className="space-y-4 animate-in fade-in duration-150">
+          <div className="space-y-4 animate-in fade-in duration-200">
             <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-500/10 via-amber-500/5 to-transparent border border-red-200/80 dark:border-red-900/40 text-xs">
               <span className="font-bold text-red-600 dark:text-red-400 block mb-0.5">
                 ⚡ Tự động nạp toàn bộ học phần & điều kiện tiên quyết cho điện thoại
@@ -306,7 +306,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
                 type="button"
                 onClick={handleApplyPresetMajor}
                 disabled={syncedSuccess}
-                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 disabled:bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-red-950/20 transition-all"
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 active:scale-95 disabled:bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-zinc-900/20 dark:shadow-none transition-all"
               >
                 {syncedSuccess ? (
                   <>
@@ -328,7 +328,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             TAB 2: TRA CỨU & THÊM MÔN NHANH (SMART SEARCH)
            ========================================================= */}
         {activeMode === 'search' && (
-          <div className="space-y-3 animate-in fade-in duration-150">
+          <div className="space-y-3 animate-in fade-in duration-200">
             {/* Search Input & Filter Tags */}
             <div className="space-y-2">
               <div className="relative">
@@ -458,7 +458,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
                   type="button"
                   onClick={handleApplySearchSelection}
                   disabled={selectedSearchCodes.size === 0}
-                  className="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white text-xs font-bold shadow-md shadow-red-950/20 transition-all"
+                  className="px-4 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-40 text-white text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-all"
                 >
                   Ghép Các Môn Đã Chọn
                 </button>
@@ -471,7 +471,7 @@ export const CourseCatalogModal: React.FC<CourseCatalogModalProps> = ({
             TAB 3: DÁN TỰ DO TỪ BẢNG EXCEL HOẶC CHAT (SMART PASTE)
            ========================================================= */}
         {activeMode === 'paste' && (
-          <div className="space-y-3 animate-in fade-in duration-150">
+          <div className="space-y-3 animate-in fade-in duration-200">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-600 dark:text-slate-400">
                 Dán bảng dữ liệu copy từ web trường hoặc bảng tính Excel:
@@ -504,7 +504,7 @@ ET3300\tKỹ thuật vi xử lý\t3(3-0-1-6)\t3\t4.5\tTDDT\t(ET2020)\tMicroproce
                 type="button"
                 onClick={handleParsePaste}
                 disabled={!inputText.trim()}
-                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white text-xs font-bold"
+                className="px-4 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-40 text-white text-xs font-bold"
               >
                 Phân Tích Dữ Liệu
               </button>
@@ -534,7 +534,7 @@ ET3300\tKỹ thuật vi xử lý\t3(3-0-1-6)\t3\t4.5\tTDDT\t(ET2020)\tMicroproce
             TAB 4: HƯỚNG DẪN F12 & BOOKMARKLET (DÀNH CHO MÁY TÍNH)
            ========================================================= */}
         {activeMode === 'f12' && (
-          <div className="space-y-3 animate-in fade-in duration-150">
+          <div className="space-y-3 animate-in fade-in duration-200">
             <div className="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 text-xs text-slate-700 dark:text-slate-300 space-y-2">
               <span className="font-bold text-blue-700 dark:text-blue-300 block">
                 💻 Hướng Dẫn Cào Trực Tiếp Bằng Trình Duyệt Máy Tính (Chrome / Edge / Firefox)
@@ -558,7 +558,7 @@ ET3300\tKỹ thuật vi xử lý\t3(3-0-1-6)\t3\t4.5\tTDDT\t(ET2020)\tMicroproce
                   setCopiedScript(true);
                   setTimeout(() => setCopiedScript(false), 2000);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-950/20"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none"
               >
                 <Copy className="w-3.5 h-3.5" />
                 <span>{copiedScript ? 'Đã Sao Chép!' : 'Sao Chép Mã F12'}</span>

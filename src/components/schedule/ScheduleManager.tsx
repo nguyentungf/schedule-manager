@@ -68,7 +68,7 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
   };
 
   return (
-    <div className="space-y-5 animate-in fade-in duration-200">
+    <div className="space-y-5 animate-in fade-in duration-300">
       {/* View Switcher Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white dark:bg-[#131b2e] p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/70 shadow-sm">
         <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export const ScheduleManager: React.FC<ScheduleManagerProps> = ({
           </button>
           <button
             onClick={handleOpenAdd}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md transition-all active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md transition-all active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm Lớp</span>

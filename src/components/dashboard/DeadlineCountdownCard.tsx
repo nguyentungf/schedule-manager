@@ -74,7 +74,7 @@ export const DeadlineCountdownCard: React.FC<DeadlineCountdownCardProps> = ({
     }
     switch (countdown.urgency) {
       case 'urgent':
-        return 'border-red-400 dark:border-red-500/80 bg-red-50/60 dark:bg-[#170e17] shadow-sm dark:shadow-lg shadow-red-950/20 ring-1 ring-red-400/30 dark:ring-red-500/30';
+        return 'border-red-400 dark:border-red-500/80 bg-red-50/60 dark:bg-[#170e17] shadow-sm dark:shadow-lg shadow-zinc-900/20 dark:shadow-none ring-1 ring-red-400/30 dark:ring-red-500/30';
       case 'warning':
         return 'border-amber-400 dark:border-amber-500/70 bg-amber-50/60 dark:bg-[#171410] shadow-sm dark:shadow-md';
       case 'safe':
@@ -134,7 +134,7 @@ export const DeadlineCountdownCard: React.FC<DeadlineCountdownCardProps> = ({
 
   return (
     <div
-      className={`rounded-2xl border p-4 transition-all duration-200 relative group flex flex-col justify-between ${getCardStyle()}`}
+      className={`rounded-2xl border p-4 transition-all duration-300 relative group flex flex-col justify-between ${getCardStyle()}`}
     >
       <div>
         {/* Header: Course Code & Urgency Badge */}
@@ -215,7 +215,7 @@ export const DeadlineCountdownCard: React.FC<DeadlineCountdownCardProps> = ({
             {/* Progress Bar */}
             <div className="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-1.5 overflow-hidden border border-slate-200 dark:border-slate-800">
               <div
-                className={`h-full transition-all duration-300 ${
+                className={`h-full transition-all duration-500 ${
                   countdown.urgency === 'urgent'
                     ? 'bg-gradient-to-r from-red-500 to-rose-600'
                     : countdown.urgency === 'warning'

@@ -158,7 +158,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                     className="fixed inset-0 z-30"
                     onClick={() => setIsMajorDropdownOpen(false)}
                   />
-                  <div className="absolute left-0 top-full mt-1.5 z-40 w-72 sm:w-80 bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl p-1.5 space-y-1 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="absolute left-0 top-full mt-1.5 z-40 w-72 sm:w-80 bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl p-1.5 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono">
                       Chọn Ngành Đào Tạo HUST
                     </div>
@@ -241,7 +241,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
           {onAddCourse && (
             <button
               onClick={handleOpenAddCourse}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-colors"
               title="Thêm học phần mới vào khung chương trình đào tạo"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -310,7 +310,7 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
 
       {/* Selected Course Prerequisites & Dependents Relationship Banner (Hiện Mã + Tên Học Phần) */}
       {selectedCourse && (
-        <div className="bg-white dark:bg-[#131b2e] border border-amber-300 dark:border-amber-500/40 rounded-2xl p-4 shadow-sm dark:shadow-xl space-y-3 animate-in fade-in duration-150">
+        <div className="bg-white dark:bg-[#131b2e] border border-amber-300 dark:border-amber-500/40 rounded-2xl p-4 shadow-sm dark:shadow-xl space-y-3 animate-in fade-in duration-200">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 rounded-md bg-red-600 text-white font-mono font-bold text-xs">

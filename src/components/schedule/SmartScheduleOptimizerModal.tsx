@@ -132,7 +132,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
               onClick={() => setActiveStep('recommend')}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 activeStep === 'recommend'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-900/20'
+                  ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -148,7 +148,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
               disabled={selectedCourseCodes.size === 0}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
                 activeStep === 'solve'
-                  ? 'bg-red-600 text-white shadow-md shadow-red-900/20'
+                  ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -164,7 +164,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                 onClick={() => setActiveStep('preview')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeStep === 'preview'
-                    ? 'bg-red-600 text-white shadow-md shadow-red-900/20'
+                    ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -179,7 +179,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
             BƯỚC 1: GỢI Ý HỌC MÁY & CHỌN MÔN KỲ TỚI
            ========================================================= */}
         {activeStep === 'recommend' && (
-          <div className="space-y-4 animate-in fade-in duration-200">
+          <div className="space-y-4 animate-in fade-in duration-300">
             {/* AI Summary Banner */}
             <div className="p-3.5 rounded-2xl bg-gradient-to-r from-red-600/10 via-rose-600/5 to-transparent border border-red-200 dark:border-red-900/40 flex items-start justify-between gap-3">
               <div className="flex items-start gap-2.5">
@@ -234,7 +234,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
 
             {/* Custom Mode Controls */}
             {isCustomMode && (
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3.5 animate-in slide-in-from-top-2 duration-200">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3.5 animate-in slide-in-from-top-2 duration-300">
                 <div>
                   <label className="text-xs font-bold text-slate-800 dark:text-slate-200 block mb-1">
                     Số tín chỉ mục tiêu kỳ tới: <span className="text-red-600 dark:text-red-400 font-mono">{targetCredits} TC</span>
@@ -347,7 +347,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                 type="button"
                 disabled={selectedCourseCodes.size === 0}
                 onClick={() => setActiveStep('solve')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md shadow-red-900/20 transition-all active:scale-95 disabled:opacity-40"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md shadow-zinc-900/20 dark:shadow-none transition-all active:scale-95 disabled:opacity-40"
               >
                 <span>Chuyển Sang Soạn Thời Khóa Biểu ({selectedCourseCodes.size} môn)</span>
                 <ChevronRight className="w-4 h-4" />
@@ -360,7 +360,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
             BƯỚC 2: SOẠN TKB & CHIẾN THUẬT XẾP LỚP (BACKTRACKING)
            ========================================================= */}
         {activeStep === 'solve' && (
-          <div className="space-y-4 animate-in fade-in duration-200">
+          <div className="space-y-4 animate-in fade-in duration-300">
             {/* 4 Strategy Filter Tabs */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
@@ -476,7 +476,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                           <button
                             type="button"
                             onClick={() => handleExportExcel(plan)}
-                            className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-colors flex items-center gap-1"
+                            className="px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-sm transition-colors flex items-center gap-1"
                             title="Xuất file Excel gồm mã lớp, tên môn, tiết học, tuần học"
                           >
                             <Download className="w-3.5 h-3.5" />
@@ -486,7 +486,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                           <button
                             type="button"
                             onClick={() => handleApply(plan)}
-                            className="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-all flex items-center gap-1 active:scale-95"
+                            className="px-4 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-all flex items-center gap-1 active:scale-95"
                           >
                             <Check className="w-3.5 h-3.5" />
                             <span>Chọn TKB Này</span>
@@ -535,7 +535,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
             BƯỚC 3: XEM TRỰC QUAN LỊCH TUẦN & XÁC NHẬN
            ========================================================= */}
         {activeStep === 'preview' && selectedPlan && (
-          <div className="space-y-4 animate-in fade-in duration-200">
+          <div className="space-y-4 animate-in fade-in duration-300">
             <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
               <div>
                 <span className="text-xs font-bold text-slate-900 dark:text-white block">
@@ -550,7 +550,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                 <button
                   type="button"
                   onClick={() => handleExportExcel(selectedPlan)}
-                  className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5"
+                  className="px-3.5 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5"
                 >
                   <FileSpreadsheet className="w-4 h-4" />
                   <span>Xuất File Excel</span>
@@ -559,7 +559,7 @@ export const SmartScheduleOptimizerModal: React.FC<SmartScheduleOptimizerModalPr
                 <button
                   type="button"
                   onClick={() => handleApply(selectedPlan)}
-                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-all flex items-center gap-1.5 active:scale-95"
+                  className="px-4 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-all flex items-center gap-1.5 active:scale-95"
                 >
                   <Check className="w-4 h-4" />
                   <span>Xác Nhận Chọn TKB Này</span>

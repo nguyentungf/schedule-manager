@@ -96,7 +96,7 @@ export const SideNavDrawer: React.FC<SideNavDrawerProps> = ({
 
               <div className="p-4 rounded-2xl bg-gradient-to-br from-red-500/10 via-slate-50 to-slate-100 dark:from-red-950/30 dark:via-slate-900/60 dark:to-[#131b2e] border border-red-200/60 dark:border-red-900/40 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 text-white font-bold text-base flex items-center justify-center shadow-md shadow-red-900/20">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 text-white font-bold text-base flex items-center justify-center shadow-md shadow-zinc-900/20 dark:shadow-none">
                     {studentInfo.name ? studentInfo.name.charAt(0).toUpperCase() : 'BK'}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -290,7 +290,7 @@ export const SideNavDrawer: React.FC<SideNavDrawerProps> = ({
                     onClick={onToggleArrangeMode}
                     className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                       isArrangeMode
-                        ? 'bg-red-600 text-white shadow-md shadow-red-950/20'
+                        ? 'bg-red-600 text-white shadow-md shadow-zinc-900/20 dark:shadow-none'
                         : 'bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-red-500'
                     }`}
                   >

@@ -96,7 +96,7 @@ export const CourseNodeCard: React.FC<CourseNodeCardProps> = ({
   return (
     <div
       onClick={() => onSelect(course)}
-      className={`rounded-xl border p-3 cursor-pointer transition-all duration-150 relative flex flex-col justify-between ${getHighlightStyle()}`}
+      className={`rounded-xl border p-3 cursor-pointer transition-all duration-200 relative flex flex-col justify-between ${getHighlightStyle()}`}
     >
       {/* Top Banner Tag if Highlighted or Retake */}
       {course.isRetake && (
@@ -137,7 +137,7 @@ export const CourseNodeCard: React.FC<CourseNodeCardProps> = ({
           <span>•</span>
           <span className="flex items-center gap-0.5 text-amber-600 dark:text-amber-400/90 font-mono text-[10px]">
             <Star className="w-2.5 h-2.5 fill-amber-500" />
-            {course.difficulty.toFixed(1)}
+            {(course.difficulty ?? 3.0).toFixed(1)}
           </span>
         </div>
 

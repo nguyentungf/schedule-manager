@@ -213,7 +213,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
               onClick={() => setIsEditMode(!isEditMode)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-xs transition-all ${
                 isEditMode
-                  ? 'bg-amber-600 hover:bg-amber-500 text-white shadow'
+                  ? 'bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow'
                   : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700'
               }`}
             >
@@ -234,7 +234,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
 
         {/* SECTION 1: EDIT FORM THÔNG TIN HỌC PHẦN (Khi bật Toggle hoặc khi Thêm mới) */}
         {isEditMode && (
-          <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 animate-in fade-in duration-150">
+          <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-4 rounded-xl space-y-3 animate-in fade-in duration-200">
             <h5 className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <Edit3 className="w-3.5 h-3.5" />
               Thông Tin Cơ Bản Học Phần
@@ -641,7 +641,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-lg text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-900/20 transition-colors"
+                className="px-4 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 shadow-md shadow-zinc-900/20 dark:shadow-none transition-colors"
               >
                 {isNewCourse ? 'Thêm Vào CTĐT' : 'Lưu Kết Quả & Thông Tin'}
               </button>

@@ -60,9 +60,9 @@ export const AppShell: React.FC<AppShellProps> = ({
   const currentTabLabel = navItems.find(i => i.id === activeTab)?.label || 'Dashboard';
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-[#070913] p-0 sm:p-4 lg:p-6 flex items-center justify-center transition-colors">
+    <div className="h-[100dvh] w-screen bg-slate-100 dark:bg-[#070913] p-0 sm:p-4 lg:p-6 flex overflow-hidden transition-colors">
       {/* Main Container */}
-      <div className="w-full max-w-[1600px] min-h-screen sm:min-h-[92vh] bg-white dark:bg-[#0e1322] rounded-none sm:rounded-[32px] lg:rounded-[36px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] dark:shadow-none border-0 sm:border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col lg:flex-row transition-all relative">
+      <div className="w-full max-w-[1600px] h-full sm:h-[92vh] mx-auto bg-white dark:bg-[#0e1322] rounded-none sm:rounded-[32px] lg:rounded-[36px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] dark:shadow-none border-0 sm:border border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row relative">
         
         {/* =========================================================
             DESKTOP LEFT SIDEBAR (HUST Bách Khoa Crimson Red)
@@ -71,7 +71,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           {/* Top Logo & Brand */}
           <div>
             <div className="flex items-center justify-center mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg shadow-red-950/20 transform hover:scale-105 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg shadow-zinc-900/20 dark:shadow-none transform hover:scale-105 transition-transform">
                 <GraduationCap className="w-8 h-8 text-white" />
               </div>
             </div>
@@ -130,7 +130,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         {/* =========================================================
             RIGHT MAIN CONTENT AREA
            ========================================================= */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f1d] overflow-y-auto pb-[calc(80px+max(env(safe-area-inset-bottom,0px),16px))] lg:pb-8">
+        <main className="flex-1 flex flex-col min-w-0 bg-[#f8fafc] dark:bg-[#0b0f1d] overflow-y-auto pb-24 lg:pb-8 relative">
           
           {/* Top Bar Header with Side Nav Drawer Button */}
           <header className="bg-white/95 dark:bg-[#0e1322]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-4 sm:px-6 pt-3.5 sm:pt-4 pb-3 sm:pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sticky top-0 z-20">
@@ -335,7 +335,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         {/* Mobile More Sheet */}
         {mobileMoreOpen && (
           <div 
-            className="lg:hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex flex-col justify-end animate-in fade-in duration-200"
+            className="lg:hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex flex-col justify-end animate-in fade-in duration-300"
             onClick={() => setMobileMoreOpen(false)}
           >
             <div 
@@ -348,7 +348,7 @@ export const AppShell: React.FC<AppShellProps> = ({
               {/* Student Profile Card in Sheet */}
               <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-red-500/10 via-rose-500/5 to-transparent border border-red-200/60 dark:border-red-900/40">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white font-black text-sm flex items-center justify-center shadow-md shadow-red-950/20">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 text-white font-black text-sm flex items-center justify-center shadow-md shadow-zinc-900/20 dark:shadow-none">
                     {studentInfo.name ? studentInfo.name.charAt(0).toUpperCase() : 'BK'}
                   </div>
                   <div>

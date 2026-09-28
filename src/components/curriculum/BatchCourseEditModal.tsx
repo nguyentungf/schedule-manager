@@ -249,7 +249,7 @@ export const BatchCourseEditModal: React.FC<BatchCourseEditModalProps> = ({
 
         {/* Bulk Action Controls Bar (Kích hoạt khi chọn >= 1 môn) */}
         {selectedIds.size > 0 && (
-          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/40 rounded-2xl flex flex-wrap items-center justify-between gap-3 animate-in fade-in duration-150">
+          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/40 rounded-2xl flex flex-wrap items-center justify-between gap-3 animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
               <span className="font-bold text-slate-900 dark:text-white text-xs">
@@ -274,7 +274,7 @@ export const BatchCourseEditModal: React.FC<BatchCourseEditModalProps> = ({
                 <button
                   type="button"
                   onClick={handleApplyBulkStatus}
-                  className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow transition-colors"
                 >
                   Đổi Trạng Thái
                 </button>
@@ -578,7 +578,7 @@ export const BatchCourseEditModal: React.FC<BatchCourseEditModalProps> = ({
             <button
               type="button"
               onClick={handleSaveAll}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-md shadow-red-900/20 transition-colors"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-colors"
             >
               <Save className="w-4 h-4" />
               <span>Lưu Tất Cả Thay Đổi ({editableCourses.length} môn)</span>

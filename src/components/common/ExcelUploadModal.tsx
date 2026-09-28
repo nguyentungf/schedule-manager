@@ -118,7 +118,7 @@ export const ExcelUploadModal: React.FC<ExcelUploadModalProps> = ({
           <button
             type="button"
             onClick={isCourseMode ? downloadCoursesExcelTemplate : downloadScheduleExcelTemplate}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors flex-shrink-0 shadow-md shadow-emerald-950/20"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold transition-colors flex-shrink-0 shadow-md shadow-zinc-900/20 dark:shadow-none"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Tải File Mẫu Excel (.xlsx)</span>
@@ -291,7 +291,7 @@ export const ExcelUploadModal: React.FC<ExcelUploadModalProps> = ({
                 type="button"
                 onClick={handleApply}
                 disabled={isCourseMode ? parsedCourses.length === 0 : parsedSchedule.length === 0}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-xs font-bold shadow-md shadow-red-900/20 transition-colors"
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-50 text-white text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none transition-colors"
               >
                 <Upload className="w-4 h-4" />
                 <span>

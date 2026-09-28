@@ -166,7 +166,7 @@ export const SortableDashboardGrid: React.FC<SortableDashboardGridProps> = ({
     <div className="space-y-6">
       {/* Arrange Mode Floating Banner */}
       {isArrangeMode && (
-        <div className="sticky top-20 z-40 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white p-3 sm:p-4 rounded-2xl shadow-xl space-y-3 border border-red-400/30 backdrop-blur-md animate-in slide-in-from-top-4 duration-300">
+        <div className="sticky top-20 z-40 bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white p-3 sm:p-4 rounded-2xl shadow-xl space-y-3 border border-red-400/30 backdrop-blur-md animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-bold text-white shrink-0">
@@ -237,7 +237,7 @@ export const SortableDashboardGrid: React.FC<SortableDashboardGridProps> = ({
                 onDragStart={e => handleDragStart(e, cardId)}
                 onDragOver={e => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`transition-all duration-200 relative ${
+                className={`transition-all duration-300 relative ${
                   isDragging ? 'dragging-vibrate ring-2 ring-red-500 rounded-3xl' : ''
                 } ${
                   isArrangeMode

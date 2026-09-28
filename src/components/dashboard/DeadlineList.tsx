@@ -150,7 +150,7 @@ export const DeadlineList: React.FC<DeadlineListProps> = ({
           {/* Add Deadline Button */}
           <button
             onClick={onOpenAddModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-900/20 border border-red-500/30 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold shadow-md shadow-zinc-900/20 dark:shadow-none border border-red-500/30 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm Deadline</span>
@@ -184,7 +184,7 @@ export const DeadlineList: React.FC<DeadlineListProps> = ({
           </p>
           <button
             onClick={onOpenAddModal}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-semibold shadow transition-colors"
           >
             <Plus className="w-4 h-4" />
             <span>Tạo Deadline Mới</span>

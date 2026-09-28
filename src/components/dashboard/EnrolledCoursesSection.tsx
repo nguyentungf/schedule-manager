@@ -67,7 +67,7 @@ export const EnrolledCoursesSection: React.FC<EnrolledCoursesSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => onOpenDetail(course)}
-                  className="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md shadow-red-600/20 transition-all flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md shadow-red-600/20 transition-all flex items-center gap-1.5"
                 >
                   <span>Chi tiết</span>
                   <ExternalLink className="w-3 h-3" />

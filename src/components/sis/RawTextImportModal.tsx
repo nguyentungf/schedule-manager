@@ -163,7 +163,7 @@ export const RawTextImportModal: React.FC<RawTextImportModalProps> = ({
               <button
                 type="button"
                 onClick={handlePasteClipboard}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md shadow-red-900/20 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md shadow-zinc-900/20 dark:shadow-none transition-all active:scale-95"
               >
                 <Clipboard className="w-3.5 h-3.5" />
                 <span>Dán từ bộ nhớ tạm</span>
@@ -193,7 +193,7 @@ export const RawTextImportModal: React.FC<RawTextImportModalProps> = ({
 
         {/* Live Parsing Result Preview */}
         {parsedData && (
-          <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 animate-in fade-in duration-200">
+          <div className="space-y-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 animate-in fade-in duration-300">
             {/* Summary statistics bar */}
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
@@ -344,7 +344,7 @@ export const RawTextImportModal: React.FC<RawTextImportModalProps> = ({
             type="button"
             disabled={!parsedData || (parsedData.courseReport.courses.length === 0 && parsedData.scheduleItems.length === 0)}
             onClick={handleApplyImport}
-            className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md shadow-red-900/20 transition-all flex items-center gap-2 active:scale-95"
+            className="px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-xs shadow-md shadow-zinc-900/20 dark:shadow-none transition-all flex items-center gap-2 active:scale-95"
           >
             <Check className="w-4 h-4" />
             <span>Xác Nhận Nạp Vào Hệ Thống</span>

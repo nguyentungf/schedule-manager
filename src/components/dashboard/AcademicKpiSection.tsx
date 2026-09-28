@@ -65,7 +65,7 @@ export const AcademicKpiSection: React.FC<AcademicKpiSectionProps> = ({
             <span className="text-xs font-bold text-red-600 dark:text-red-400">
               Tín Chỉ Hoàn Thành
             </span>
-            <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-red-950/20">
+            <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-md shadow-zinc-900/20 dark:shadow-none">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>

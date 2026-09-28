@@ -58,7 +58,7 @@ export const BookmarkletGuide: React.FC = () => {
           href={bookmarkletCode}
           onClick={e => e.preventDefault()}
           draggable
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md border border-red-500 cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md border border-red-500 cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
         >
           <Bookmark className="w-4 h-4 fill-white" />
           <span>⚡ Cào Điểm SIS HUST (Ultra)</span>
@@ -85,7 +85,7 @@ export const BookmarkletGuide: React.FC = () => {
 
           <button
             onClick={handleCopyConsole}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-xs font-bold text-white transition-colors shadow-sm active:scale-[0.98]"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-xs font-bold text-white transition-colors shadow-sm active:scale-[0.98]"
           >
             {copiedConsole ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copiedConsole ? 'Đã sao chép code!' : 'Copy Code F12'}</span>

@@ -78,7 +78,7 @@ export const BackupRestore: React.FC<BackupRestoreProps> = ({
           </div>
           <button
             onClick={handleExport}
-            className="w-full py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Tải File Backup (.json)</span>
@@ -105,7 +105,7 @@ export const BackupRestore: React.FC<BackupRestoreProps> = ({
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-xs shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Chọn File Để Khôi Phục</span>

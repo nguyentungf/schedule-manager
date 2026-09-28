@@ -69,7 +69,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             
             {/* Center Graduation Artwork */}
             <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-white/15 backdrop-blur-xl border border-white/30 flex flex-col items-center justify-center shadow-2xl p-4 text-center transform hover:rotate-3 transition-transform">
-              <div className="w-14 h-14 rounded-2xl bg-white text-red-600 flex items-center justify-center shadow-lg shadow-red-950/20 mb-2">
+              <div className="w-14 h-14 rounded-2xl bg-white text-red-600 flex items-center justify-center shadow-lg shadow-zinc-900/20 dark:shadow-none mb-2">
                 <GraduationCap className="w-8 h-8" />
               </div>
               <span className="text-[11px] font-black uppercase tracking-wider text-white">
